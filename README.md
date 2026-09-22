@@ -1,8 +1,25 @@
-# QuantumFX 2.0 · Windows Desktop
+# QuantumFX 2.1 · Windows Desktop
 
 Deutschsprachiger Währungsrechner mit Tagesreferenzkursen, Kursdiagrammen,
 Gebührenvergleich und lokalem Verlauf. Weiterentwicklung von
 https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform
+
+## Neu in 2.1 · Weiterentwickelt von Eric
+
+Die neue Oberfläche startet im Vollbild mit Seitenleiste, violetten und mintfarbenen
+Akzenten, animierten Schaltflächen, Diagrammaufbau und Ergebnisrückmeldung.
+F11 wechselt den Vollbildmodus; Escape verlässt ihn. Mit --windowed startet die
+Anwendung direkt im normalen Fenster. Auf schmalen Fenstern stehen Rechner und
+Diagramm untereinander. Animationen lassen sich links abschalten; die Einstellung
+wird gespeichert. Diagrammdaten können zusätzlich als CSV exportiert werden.
+
+Snake Arcade ist direkt über die Seitenleiste erreichbar. Neues Spiel startet
+eine Runde, Pfeiltasten oder WASD steuern die Schlange, Leertaste pausiert und
+Enter beginnt neu. Zuerst das Spielfeld anklicken, falls die Tastatur einen anderen
+Bereich fokussiert. Drei Geschwindigkeiten stehen bereit. Der Highscore wird lokal
+gespeichert. Beim Bereichswechsel und bei Escape pausiert die Runde automatisch.
+Der Hinweis „Weiterentwickelt von Eric“ steht dauerhaft in der Seitenleiste und
+zusätzlich im Hilfebereich; die Herkunft des Originalprojekts bleibt genannt.
 
 ## Direkt starten
 
@@ -112,5 +129,7 @@ Geprüft auf dem verfügbaren Windows-11-System (x64). Andere Windows-Versionen
 und PCs sind nicht separat geprüft. Externer Kursdienst kann ausfallen.
 Keine automatischen Updates. Kein Installer erforderlich.
 
-Lokale Weiterentwicklung: Es wurde nichts in das öffentliche Original-Repository
-gepusht und kein GitHub-Release veröffentlicht.
+Weiterentwicklung im Fork Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform.
+Das Original-Repository bleibt separat. Die Windows-EXE wird zusätzlich vom
+GitHub-Actions-Workflow als herunterladbares Build-Artefakt bereitgestellt, wenn
+Tests und Build erfolgreich durchlaufen. Ein GitHub-Release ist nicht erforderlich.

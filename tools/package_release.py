@@ -18,16 +18,16 @@ shutil.copy2(root / "LICENSE", out / "LICENSE")
 excluded = {".git", ".venv", "__pycache__", ".pytest_cache", "build", "dist"}
 sources = [p for p in root.rglob("*") if p.is_file()
            and not excluded.intersection(p.relative_to(root).parts) and p.suffix != ".spec"]
-with zipfile.ZipFile(out / "QuantumFX-2.0-Quellcode.zip", "w", zipfile.ZIP_DEFLATED) as archive:
+with zipfile.ZipFile(out / "QuantumFX-2.1-Quellcode.zip", "w", zipfile.ZIP_DEFLATED) as archive:
     for path in sorted(sources):
         archive.write(path, Path("QuantumFX") / path.relative_to(root))
-with zipfile.ZipFile(out / "QuantumFX-2.0-Windows-x64.zip", "w", zipfile.ZIP_DEFLATED) as archive:
+with zipfile.ZipFile(out / "QuantumFX-2.1-Windows-x64.zip", "w", zipfile.ZIP_DEFLATED) as archive:
     for name in ("QuantumFX.exe", "Anleitung.md", "Pruefbericht.md", "LICENSE"):
         archive.write(out / name, name)
     for path in (root / "licenses").iterdir():
         archive.write(path, Path("licenses") / path.name)
 lines = []
-for name in ("QuantumFX.exe", "QuantumFX-2.0-Quellcode.zip", "QuantumFX-2.0-Windows-x64.zip"):
+for name in ("QuantumFX.exe", "QuantumFX-2.1-Quellcode.zip", "QuantumFX-2.1-Windows-x64.zip"):
     path = out / name
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     lines.append(f"{digest}  {name}")

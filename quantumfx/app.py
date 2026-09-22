@@ -8,12 +8,8 @@ from datetime import datetime
 from decimal import Decimal
 from tkinter import ttk, filedialog, messagebox
 from .core import RateService, Store, convert, number, money, export_csv
-
-BG = "#0c1423"
-CARD = "#152238"
-TEXT = "#e6edf7"
-MUTED = "#99abc5"
-ACCENT = "#56dfbe"
+from .ui import BG, CARD, TEXT, MUTED, ACCENT, MINT, SIDEBAR, Animator, MotionButton, Hero, blend
+from .snake import SnakePanel
 
 
 class App:
@@ -21,6 +17,8 @@ class App:
         self.root = root
         self.service = RateService(folder)
         self.store = Store(folder)
+        self.animator = Animator(root, self.store.prefs.get("animations", True) is not False)
+        self.fullscreen = False
         self.snapshot = self.service.cached()
         self.events = queue.Queue()
         self.pending = set()
@@ -55,7 +53,9 @@ class App:
             variable.trace_add("write", lambda *args: self.invalidate_result())
         self.apply_snapshot(self.snapshot)
         self.fill_history()
-        self.root.bind("<Return>", lambda e: self.calculate())
+        self.root.bind("<Return>", self.enter_action)
+        self.root.bind("<F11>", lambda e: self.toggle_fullscreen())
+        self.root.bind("<Escape>", lambda e: self.leave_fullscreen())
         self.root.bind("<Control-r>", lambda e: self.refresh())
         self.root.bind("<Control-s>", lambda e: self.swap())
         self.poll_id = self.root.after(100, self.poll)
@@ -81,6 +81,7 @@ class App:
         style.configure("TCombobox", fieldbackground=CARD, background=CARD, foreground=TEXT, padding=8, arrowcolor=TEXT)
         style.map("TCombobox", fieldbackground=[("readonly", CARD)], foreground=[("readonly", TEXT)])
         style.configure("TNotebook", background=BG, borderwidth=0)
+        style.layout("TNotebook.Tab", [])
         style.configure("TNotebook.Tab", background=CARD, foreground=MUTED, padding=(20, 12))
         style.map("TNotebook.Tab", background=[("selected", "#223952")], foreground=[("selected", ACCENT)])
         style.configure("Treeview", background=CARD, fieldbackground=CARD, foreground=TEXT, rowheight=34, borderwidth=0)
@@ -94,15 +95,31 @@ class App:
         return w
 
     def button(self, parent, text, fn, accent=False):
-        return ttk.Button(parent, text=text, command=fn, style="Accent.TButton" if accent else "TButton")
+        return MotionButton(parent, text, fn, self.animator, accent)
 
     def build(self):
-        outer = ttk.Frame(self.root, padding=26)
+        sidebar = tk.Frame(self.root, bg=SIDEBAR, width=200, padx=16, pady=26)
+        sidebar.pack(side="left", fill="y")
+        sidebar.pack_propagate(False)
+        tk.Label(sidebar, text="QuantumFX", bg=SIDEBAR, fg=TEXT, font=("Segoe UI", 16, "bold")).pack(anchor="w")
+        tk.Label(sidebar, text="DESKTOP  /  2.1", bg=SIDEBAR, fg=ACCENT, font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 28))
+        self.nav = tk.Frame(sidebar, bg=SIDEBAR)
+        self.nav.pack(fill="x")
+        self.credit = tk.Label(sidebar, text="Weiterentwickelt\nvon Eric", bg=SIDEBAR, fg=TEXT,
+                               font=("Segoe UI", 11, "bold"), justify="left")
+        self.credit.pack(side="bottom", anchor="w", pady=14)
+        self.motion_btn = MotionButton(sidebar, "Animationen: an" if self.animator.enabled else "Animationen: aus",
+                                       self.toggle_motion, self.animator, background=SIDEBAR)
+        self.motion_btn.pack(side="bottom", fill="x", pady=8)
+        outer = ttk.Frame(self.root, padding=(24, 18))
         outer.pack(fill="both", expand=True)
         header = ttk.Frame(outer)
         header.pack(fill="x", pady=(0, 18))
-        ttk.Label(header, text="◈  QuantumFX", font=("Segoe UI", 25, "bold")).pack(side="left")
-        ttk.Label(header, text="CURRENCY INTELLIGENCE  /  2.0", style="Muted.TLabel").pack(side="left", padx=22)
+        self.page_title = ttk.Label(header, text="Übersicht", font=("Segoe UI", 23, "bold"))
+        self.page_title.pack(side="left")
+        self.button(header, "Schließen", self.close).pack(side="right", padx=(8, 0))
+        self.full_btn = self.button(header, "Vollbild  F11", self.toggle_fullscreen)
+        self.full_btn.pack(side="right", padx=8)
         self.refresh_btn = self.button(header, "Kurse aktualisieren", self.refresh)
         self.refresh_btn.pack(side="right")
         ttk.Label(outer, textvariable=self.status, foreground=ACCENT, wraplength=1080).pack(fill="x", pady=(0, 15))
@@ -113,9 +130,16 @@ class App:
         self.history_tab = ttk.Frame(self.tabs, padding=(0, 22))
         self.compare_tab = ttk.Frame(self.tabs, padding=(0, 22))
         self.help_tab = ttk.Frame(self.tabs, padding=(0, 22))
+        self.snake_tab = ttk.Frame(self.tabs, padding=(0, 16))
+        self.nav_buttons = []
         for frame, title in [(self.converter, "Umrechnen & Analyse"), (self.markets, "Kursübersicht"),
-                             (self.compare_tab, "Gebührenvergleich"), (self.history_tab, "Verlauf"), (self.help_tab, "Hilfe & Datenschutz")]:
+                             (self.compare_tab, "Gebührenvergleich"), (self.history_tab, "Verlauf"),
+                             (self.snake_tab, "Snake Arcade"), (self.help_tab, "Hilfe & Datenschutz")]:
             self.tabs.add(frame, text=title)
+            nav_btn = MotionButton(self.nav, title, lambda f=frame: self.tabs.select(f), self.animator, background=SIDEBAR)
+            nav_btn.pack(fill="x", pady=5)
+            self.nav_buttons.append((str(frame), title, nav_btn))
+        self.tabs.bind("<<NotebookTabChanged>>", self.page_changed)
         viewport = tk.Canvas(self.converter, bg=BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(self.converter, orient="vertical", command=viewport.yview)
         viewport.configure(yscrollcommand=scrollbar.set)
@@ -129,10 +153,21 @@ class App:
         self.root.bind("<MouseWheel>", self.scroll_converter, add=True)
         content.columnconfigure(0, weight=2)
         content.columnconfigure(1, weight=3)
+        hero = Hero(content)
+        hero.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 24))
         left = ttk.Frame(content, padding=(0, 0, 28, 0))
-        left.grid(row=0, column=0, sticky="nsew")
+        left.grid(row=1, column=0, sticky="nsew")
         right = ttk.Frame(content)
-        right.grid(row=0, column=1, sticky="nsew")
+        right.grid(row=1, column=1, sticky="nsew")
+        def responsive(event):
+            viewport.itemconfigure(content_id, width=event.width)
+            if event.width < 950:
+                left.grid_configure(row=1, column=0, columnspan=2, padx=(0, 0))
+                right.grid_configure(row=2, column=0, columnspan=2, pady=(24, 0))
+            else:
+                left.grid_configure(row=1, column=0, columnspan=1)
+                right.grid_configure(row=1, column=1, columnspan=1, pady=0)
+        viewport.bind("<Configure>", responsive)
         self.label(left, "Dein Währungsrechner", 20)
         self.label(left, "Betrag · ohne Tausendertrennzeichen", muted=True)
         self.amount_entry = ttk.Entry(left, textvariable=self.amount, font=("Segoe UI", 19))
@@ -154,12 +189,13 @@ class App:
         ttk.Label(fees, text="Fix").pack(side="left")
         ttk.Entry(fees, textvariable=self.fixed, width=10).pack(side="left", padx=8)
         self.button(left, "Umrechnen & speichern  ↗", self.calculate, True).pack(fill="x")
-        result_card = tk.Frame(left, bg=CARD, padx=18, pady=18)
+        result_card = tk.Frame(left, bg=CARD, padx=22, pady=22, highlightthickness=1, highlightbackground="#2a3b52")
+        self.result_card = result_card
         result_card.pack(fill="x", pady=18)
         tk.Label(result_card, text="DU ERHÄLTST NACH GEBÜHREN", bg=CARD, fg=MUTED,
                  font=("Segoe UI", 9)).pack(anchor="w")
-        tk.Label(result_card, textvariable=self.result, bg=CARD, fg=ACCENT,
-                 font=("Segoe UI", 22, "bold"), wraplength=380, justify="left").pack(anchor="w", pady=10)
+        tk.Label(result_card, textvariable=self.result, bg=CARD, fg=MINT,
+                 font=("Segoe UI", 28, "bold"), wraplength=440, justify="left").pack(anchor="w", pady=10)
         tk.Label(result_card, textvariable=self.detail, bg=CARD, fg=TEXT, wraplength=350,
                  justify="left").pack(anchor="w")
         actions = ttk.Frame(left)
@@ -176,6 +212,7 @@ class App:
         period.bind("<<ComboboxSelected>>", self.pair_changed)
         self.chart_btn = self.button(toolbar, "Verlauf laden", self.load_chart)
         self.chart_btn.pack(side="right")
+        self.button(right, "Diagrammdaten als CSV", self.export_chart).pack(anchor="e", pady=(0, 8))
         self.canvas = tk.Canvas(right, bg=CARD, highlightthickness=0, height=280)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Configure>", lambda e: self.draw_chart())
@@ -192,8 +229,47 @@ class App:
         self.build_history()
         self.build_compare()
         self.build_help()
+        self.snake = SnakePanel(self.snake_tab, self.store, self.animator)
+        self.snake.pack(fill="both", expand=True)
         ttk.Label(outer, text="Frankfurter / EZB · Tagesreferenzkurse, keine Echtzeit-Handelskurse. Gebühren sind eigene Annahmen.",
                   style="Muted.TLabel").pack(anchor="w", pady=(12, 0))
+
+    def enter_action(self, event=None):
+        if self.tabs.select() == str(self.converter):
+            self.calculate()
+
+    def toggle_fullscreen(self):
+        self.fullscreen = not self.fullscreen
+        self.root.attributes("-fullscreen", self.fullscreen)
+        self.full_btn.configure(text="Fenster  Esc" if self.fullscreen else "Vollbild  F11")
+
+    def leave_fullscreen(self):
+        if hasattr(self, "snake"):
+            self.snake.pause()
+        if self.fullscreen:
+            self.toggle_fullscreen()
+
+    def toggle_motion(self):
+        self.animator.enabled = not self.animator.enabled
+        self.animator.stop()
+        self.motion_btn.configure(text="Animationen: an" if self.animator.enabled else "Animationen: aus")
+        self.store.prefs["animations"] = self.animator.enabled
+        try:
+            self.store.save()
+        except OSError:
+            self.feedback.set("Darstellung konnte nicht gespeichert werden.")
+        self.draw_chart()
+
+    def page_changed(self, event=None):
+        selected = self.tabs.select()
+        for frame, title, button in self.nav_buttons:
+            button.accent = frame == selected
+            button.draw()
+            if frame == selected:
+                self.page_title.configure(text=title)
+        if hasattr(self, "snake"):
+            self.snake.pause()
+        self.animator.run("page", lambda t: self.page_title.configure(foreground=blend(MUTED, TEXT, t)), 300)
 
     def table(self, parent, columns):
         frame = ttk.Frame(parent)
@@ -252,7 +328,10 @@ class App:
             "nur Währungspaar, Zeitraum und die üblichen Verbindungsdaten. Keine Anmeldung, keine Telemetrie. "
             "CSV-Dateien werden ausschließlich am gewählten Speicherort angelegt.\n\n"
             "LOKALE DATEN\n" + str(self.store.folder) + "\n\n"
-            "QuantumFX 2.0 · Weiterentwicklung von oneiric-hammer/QuantumFX-Currency-Intelligence-Platform. "
+            "QuantumFX 2.1 · Weiterentwickelt von Eric.\n"
+            "F11: Vollbild wechseln. Escape: Vollbild verlassen und Snake pausieren. "
+            "Animationen lassen sich in der Seitenleiste abschalten.\n"
+            "Originalprojekt: oneiric-hammer/QuantumFX-Currency-Intelligence-Platform. "
             "Die Original-Lizenz liegt der Lieferung unverändert bei."
         )
         box = tk.Text(self.help_tab, bg=CARD, fg=TEXT, relief="flat", wrap="word", padx=22, pady=18)
@@ -378,6 +457,7 @@ class App:
                         f"Gebühren: {money(result['fee'], base)} {base}\n"
                         f"Ohne Gebühren: {money(result['gross'], target)} {target}")
         if save:
+            self.animator.run("result", lambda t: self.result_card.configure(highlightbackground=blend(MINT, "#2a3b52", t)), 650)
             try:
                 self.store.add({"time": datetime.now().isoformat(timespec="seconds"), "amount": str(amount),
                     "base": base, "target": target, "net": str(result["net"]), "rate": str(result["rate"]),
@@ -399,6 +479,7 @@ class App:
             self.viewport.yview_scroll(int(-event.delta / 120), "units")
 
     def pair_changed(self, event=None):
+        self.animator.cancel("chart")
         self.invalidate_comparison()
         self.chart_points = []
         self.chart_key = None
@@ -496,6 +577,14 @@ class App:
     def export_history(self):
         self.save_csv(self.store.rows, ["time", "amount", "base", "target", "net", "rate", "fee", "date", "source"], "QuantumFX-Verlauf.csv")
 
+    def export_chart(self):
+        if not self.chart_points or not self.chart_key:
+            self.chart_status.set("Zuerst einen Kursverlauf laden.")
+            return
+        base, target, _ = self.chart_key
+        self.save_csv([{"date": day, "base": base, "target": target, "rate": str(rate)} for day, rate in self.chart_points],
+                      ["date", "base", "target", "rate"], f"QuantumFX-{base}-{target}.csv")
+
     def clear_history(self):
         if messagebox.askyesno("Verlauf löschen", "Alle gespeicherten Umrechnungen unwiderruflich löschen?", parent=self.root):
             try:
@@ -522,10 +611,10 @@ class App:
             change = (last / first - 1) * 100
             self.chart_status.set(f"{key[0]}/{key[1]} · {change:+.2f} % im verfügbaren Zeitraum · "
                                   f"{len(self.chart_points)} Datenpunkte · {'Cache' if source == 'cache' else 'Referenzkurse'}")
-            self.draw_chart()
+            self.animator.run("chart", lambda t: self.draw_chart(t), 700)
         self.submit("chart", lambda: self.service.history(*key), done)
 
-    def draw_chart(self):
+    def draw_chart(self, progress=1.0):
         c = self.canvas
         c.delete("all")
         w, h = c.winfo_width(), c.winfo_height()
@@ -545,9 +634,12 @@ class App:
         span = max(1, ordinals[-1] - ordinals[0])
         self.chart_coords = [(left + (right-left) * (day-ordinals[0]) / span,
                               bottom - (v-low)/(high-low)*(bottom-top)) for day, v in zip(ordinals, values)]
-        flat = [v for point in self.chart_coords for v in point]
+        visible = self.chart_coords[:max(1, int(len(self.chart_coords)*progress))]
+        flat = [v for point in visible for v in point]
         if len(flat) >= 4:
-            c.create_line(*flat, fill=ACCENT, width=2)
+            c.create_polygon(*flat, visible[-1][0], bottom, visible[0][0], bottom, fill="#1b303a", outline="")
+            c.create_line(*flat, fill="#204e48", width=7)
+            c.create_line(*flat, fill=MINT, width=2)
         else:
             x, y = self.chart_coords[0]
             c.create_oval(x-3, y-3, x+3, y+3, fill=ACCENT, outline="")
@@ -569,6 +661,8 @@ class App:
         messagebox.showerror("QuantumFX", "Diese Aktion ist fehlgeschlagen. Details stehen in der lokalen Protokolldatei.", parent=self.root)
 
     def close(self):
+        self.animator.stop()
+        self.snake.pause()
         self.root.after_cancel(self.poll_id)
         self.store.prefs.update(base=self.base.get(), target=self.target.get())
         try:

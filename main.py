@@ -12,6 +12,7 @@ from quantumfx.app import App
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--offline", action="store_true")
+    parser.add_argument("--windowed", action="store_true", help="Start in a resizable window")
     parser.add_argument("--smoke-test", type=Path)
     args = parser.parse_args()
     try:
@@ -31,6 +32,8 @@ def main():
         logging.basicConfig(level=logging.WARNING)
     root = tk.Tk()
     app = App(root, folder, offline=args.offline or bool(args.smoke_test))
+    if not args.windowed and not args.smoke_test:
+        app.toggle_fullscreen()
     if args.smoke_test:
         def smoke():
             try:
@@ -43,6 +46,11 @@ def main():
                 app.favorite()
                 app.compare()
                 assert len(app.compare_tree.get_children()) == 3
+                app.tabs.select(app.snake_tab)
+                root.update_idletasks()
+                app.snake.start()
+                app.snake.pause()
+                assert len(app.snake.game.body) == 3
                 app.chart_points = [("2026-01-01", __import__("decimal").Decimal("1.10")),
                                     ("2026-01-02", __import__("decimal").Decimal("1.15"))]
                 app.draw_chart()

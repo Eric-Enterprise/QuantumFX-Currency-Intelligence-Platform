@@ -24,6 +24,8 @@ def app(tmp_path, tk_root):
     instance = App(root, tmp_path, offline=True)
     root.update()
     yield instance
+    instance.animator.stop()
+    instance.snake.pause()
     root.after_cancel(instance.poll_id)
     root.unbind("<MouseWheel>")
     for child in root.winfo_children():
@@ -125,3 +127,46 @@ def test_new_snapshot_invalidates_comparison(app):
     assert len(app.compare_tree.get_children()) == 3
     app.apply_snapshot(app.snapshot)
     assert app.compare_tree.get_children() == ()
+
+
+def test_fullscreen_escape(app):
+    app.toggle_fullscreen()
+    app.root.update()
+    assert app.fullscreen and bool(app.root.attributes("-fullscreen"))
+    app.leave_fullscreen()
+    app.root.update()
+    assert not app.fullscreen
+
+
+def test_snake_pauses_on_navigation(app):
+    app.tabs.select(app.snake_tab)
+    app.root.update()
+    app.snake.start()
+    assert app.snake.running and app.snake.timer is not None
+    app.tabs.select(app.converter)
+    app.root.update()
+    assert not app.snake.running and app.snake.timer is None
+
+
+def test_snake_highscore_persists(app):
+    from quantumfx.core import Store
+    app.tabs.select(app.snake_tab)
+    app.root.update()
+    app.snake.start()
+    app.snake.after_cancel(app.snake.timer)
+    app.snake.timer = None
+    x, y = app.snake.game.body[0]
+    app.snake.game.food = (x+1, y)
+    app.snake.tick()
+    app.snake.pause()
+    assert Store(app.store.folder).prefs["snake_highscore"] == 10
+
+
+def test_reduced_motion_and_credit(app):
+    app.toggle_motion()
+    assert not app.animator.enabled
+    assert "Eric" in app.credit.cget("text")
+    results = []
+    app.animator.run("test", results.append)
+    assert results == [1.0]
+    assert app.store.prefs["animations"] is False

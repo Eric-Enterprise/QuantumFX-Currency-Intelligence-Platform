@@ -1,3 +1,15 @@
+# Änderungen in 2.1.0
+
+- Moderne Vollbildoberfläche mit Seitenleiste, Hero-Bereich und responsivem Rechnerlayout.
+- F11 und Escape für Vollbild; sichtbare Fenster- und Schließen-Schaltflächen.
+- Animierte Hoverzustände, Seitenwechsel, Ergebnisbestätigung und Diagrammaufbau.
+- Abschaltbare Animationen mit gespeicherter Einstellung.
+- Integriertes Snake mit flüssiger Bewegung, drei Geschwindigkeiten, Pause,
+  lokalem Highscore und automatischer Pause beim Bereichswechsel.
+- Dauerhafter Hinweis „Weiterentwickelt von Eric“ und Herkunftshinweis im Hilfebereich.
+- CSV-Export historischer Diagrammdaten.
+- Zusätzliche Tests für Spielregeln, Vollbild, Navigation und gespeicherte Einstellungen.
+
 # Änderungen in 2.0.0
 
 - Monolithischen Rechner in Daten-/Rechenlogik und Desktop-Oberfläche aufgeteilt.
