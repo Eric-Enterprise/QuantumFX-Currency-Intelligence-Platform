@@ -1,217 +1,116 @@
-<div align="center">
+# QuantumFX 2.0 · Windows Desktop
 
-# 💎 QUANTUMFX™ CURRENCY INTELLIGENCE PLATFORM 💎
+Deutschsprachiger Währungsrechner mit Tagesreferenzkursen, Kursdiagrammen,
+Gebührenvergleich und lokalem Verlauf. Weiterentwicklung von
+https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform
 
-### *The World's Most Advanced Hyper-Converged Foreign Exchange Conversion Engine*
+## Direkt starten
 
+<<<<<<< HEAD
 **Redefining the future of monetary value translation, one transaction at a time.**
 
+=======
+QuantumFX.exe per Doppelklick starten. Windows 10/11, 64 Bit (x64).
+Die portable EXE enthält Python und Tk. Kein Installer, keine separate
+Python-Installation und keine Administratorrechte für den normalen Betrieb nötig.
+Beim ersten Start kann das Entpacken der enthaltenen Laufzeit einige Sekunden dauern.
+Die Datei ist nicht digital signiert. Andere PCs wurden nicht separat geprüft.
+>>>>>>> c9cff6a (feat: ship QuantumFX desktop platform)
 
-![Status](https://img.shields.io/badge/status-PRODUCTION%20READY-brightgreen?style=for-the-badge)
-![Uptime](https://img.shields.io/badge/uptime-99.999%25-blue?style=for-the-badge)
-![AI](https://img.shields.io/badge/AI--POWERED-✨%20YES%20✨-ff69b4?style=for-the-badge)
-![Enterprise](https://img.shields.io/badge/ENTERPRISE-GRADE-gold?style=for-the-badge)
-![Blockchain](https://img.shields.io/badge/blockchain-NOT%20REQUIRED%20(but%20we%20could)-purple?style=for-the-badge)
+## Funktionen
 
-![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat-square&logo=python&logoColor=white)
-![Tkinter](https://img.shields.io/badge/GUI-Tkinter-FF6F00?style=flat-square)
-![License](https://img.shields.io/badge/license-PROPRIETARY%20GENIUS-red?style=flat-square)
-![Coffee](https://img.shields.io/badge/powered%20by-☕%20×%20∞-brown?style=flat-square)
+- 30 Währungen beim überprüften Online-Abruf; Umfang abhängig vom Kursanbieter.
+- Dezimalgenaue Umrechnung beliebiger verfügbarer Währungspaare.
+- Prozentuale und fixe Gebühren in der Ausgangswährung.
+- Vergleich von drei selbst eingetragenen Gebührenangeboten.
+- Historische Tageskurse über 30, 90 oder 365 Tage; Werte per Maus ablesen.
+- Favoriten, Währungstausch und durchsuchbare Kursübersicht.
+- Bis zu 1.000 gespeicherte Umrechnungen inklusive Kursdatum und Quelle.
+- CSV-Export von Kursübersicht und Verlauf (UTF-8-BOM, Semikolon).
+- Hintergrundabrufe, Offline-Cache, atomare Schreibvorgänge und Fehlerprotokoll.
+- Größenveränderliches Fenster mit scrollbar erreichbarem Rechnerinhalt.
 
-*Trusted by 0 Fortune 500 companies. Yet.*
+Die neue Oberfläche ist auf Deutsch. Die ursprüngliche Oberfläche mit vier
+Sprachen ist unverändert unter legacy/QuantumFX-original.py archiviert.
+Sie ist nicht Bestandteil der neuen EXE.
 
-</div>
+## Bedienung
 
----
+1. Betrag ohne Tausendertrennzeichen eingeben: 1234,56 oder 1234.56.
+2. Ausgangs- und Zielwährung wählen.
+3. Optional Gebühren eintragen. Berechnung:
+   (Betrag - Betrag * Prozent / 100 - Fixgebühr) * Zielkurs / Basiskurs.
+4. Umrechnen & speichern drücken. Das Ergebnis wird lokal protokolliert.
+5. Für Diagramme Verlauf laden wählen. Nach Paar- oder Zeitraumwechsel neu laden.
 
-## 🌐 EXECUTIVE SUMMARY
+Enter rechnet um, Strg+R lädt aktuelle Kurse, Strg+S tauscht die Währungen.
+Negative Werte, Exponentialschreibweise, Tausendertrennzeichen, mehr als acht
+Nachkommastellen und Beträge über einer Billion werden abgewiesen.
+Nur die Anzeige wird gerundet (ROUND_HALF_UP). CSV erhält Dezimalwerte ungerundet.
+Der Gebührenvergleich nimmt für alle Angebote denselben Referenzkurs an;
+individuelle Wechselkursaufschläge sind nicht enthalten.
 
-In a world drowning in monetary fragmentation, **QuantumFX™** emerges as the definitive solution to humanity's oldest question: *"Wait, how much is that in euros?"*
+## Datenqualität
 
-Leveraging a **best-in-class, cloud-adjacent, latency-optimized data ingestion pipeline**, QuantumFX™ delivers real-time foreign exchange intelligence directly to your desktop with **zero compromise** and a **carbon-neutral conscience**.\*
+Quelle: Frankfurter v1 / EZB, https://frankfurter.dev/v1/ .
+Tagesreferenzkurse, keine Echtzeitkurse oder garantierten Bankangebote.
+Wochenenden und Feiertage können das Kursdatum zurückliegen lassen.
+v1 wird vom Anbieter weiterbetrieben, ist aber zugunsten von v2 abgekündigt.
+Der Anbieterzugriff ist in quantumfx/core.py zentral gekapselt.
 
-This is not just a currency converter.
-This is a **paradigm shift in value perception**.
+Online abgerufen: validierte API-Daten mit tatsächlichem Kursdatum.
+Offline / gespeicherte Kurse: letzter gespeicherter Stand, auch wenn älter.
+DEMO: undatierte Beispielwerte aus dem Originalprojekt, nur zum Ausprobieren.
+Verlauf und CSV kennzeichnen diese Umrechnungen ausdrücklich als DEMO.
+Diagramme verwenden nur abgerufene oder gespeicherte historische Daten.
+Fehlende Daten werden nicht erfunden. Identische Währungspaare haben Kurs 1.
 
-> *"It converts currencies."* — Early Access Reviewer
+## Lokale Daten und Datenschutz
 
-\* *Carbon neutrality pending the planting of one (1) metaphorical tree.*
+Standardordner: %LOCALAPPDATA%\QuantumFX
+- settings.json: gewähltes Währungspaar und Favoriten.
+- rates.json: letzter Kursstand mit Kurs- und Abrufdatum.
+- chart-*.json: gespeicherte Zeitreihen nach Paar und Zeitraum.
+- history.json: bis zu 1.000 Umrechnungen.
+- QuantumFX.log: Fehlerprotokoll, maximal drei Dateien von je ca. 1 MB.
 
----
+Beträge und Verlauf werden nicht an den Anbieter übertragen. Abfragen enthalten
+nur Währungen, Zeitraum und normale Verbindungsdaten. Kein Konto, keine Telemetrie,
+keine Broker-Verbindung, keine Handelsausführung.
+QUANTUMFX_DATA_DIR kann für Tests oder getrennte Profile einen anderen Ordner setzen.
+QuantumFX.exe --offline unterdrückt den automatischen Startabruf; manuelle Abrufe
+bleiben möglich. Verlauf löschen entfernt die lokal gespeicherten Umrechnungen.
 
-## 🚀 KEY DIFFERENTIATORS
+## Aus dem Quellcode starten und bauen
 
-| Feature | QuantumFX™ | "Other" Converters |
-|---------|:----------:|:-------------------:|
-| Converts currencies | ✅ | ✅ |
-| Self-healing rate engine | ✅ | ❌ |
-| Quad-lingual neural interface\*\* | ✅ | ❌ |
-| Survives the apocalypse (offline mode) | ✅ | 🤷 |
-| Dark mode by default (we respect your retinas) | ✅ | ❌ |
-| Costs millions to develop\*\*\* | ✅ | ❓ |
+Python 3.10 oder neuer mit Tk. Keine externen Laufzeitpakete für die neue Anwendung.
+Start: python main.py
+Der ursprüngliche Dateiname startet ebenfalls die neue Anwendung.
 
-\*\* *Neural interface is a `dict`.*
-\*\*\* *Development cost: approximately three energy drinks and one existential crisis.*
+Windows-Entwicklungsumgebung:
+    python -m venv .venv
+    .venv/Scripts/python.exe -m pip install -r requirements-dev.txt
+    .venv/Scripts/python.exe -m pytest
+    $env:QUANTUMFX_GUI_TESTS = '1'
+    .venv/Scripts/python.exe -m pytest
+    ./build.ps1 -Python .venv/Scripts/python.exe
 
----
+Ergebnis: dist/QuantumFX.exe. Icon liegt bei. Nur die Neugenerierung mit
+ tools/create_icon.py benötigt Pillow.
 
-## ⚡ CORE CAPABILITIES
+Verpackter Fenstertest mit temporärem Profil:
+    ./dist/QuantumFX.exe --smoke-test C:/Pfad/smoke-result.json
+Nach dem Prozessende enthält die JSON-Datei ok: true oder eine Fehlermeldung.
+Tests unter tests/ prüfen die neue Produktionslogik. Historische Tests unter
+legacy/ bleiben als Referenz archiviert und gehören nicht zur neuen Testsuite.
 
-### 🧠 Tri-Tier Resilient Rate Acquisition Architecture™
-Our **proprietary** (it's a `try/except` block) fallback cascade guarantees uninterrupted service through a sophisticated three-layer defense matrix:
+## Herkunft und Grenzen
 
-```
-   ┌─────────────────────────────────────────────┐
-   │  TIER 1:  LIVE QUANTUM FEED                   │
-   │  ↳ Frankfurter API (European Central Bank)    │
-   │     Real ECB data. Real fast. Real free.      │
-   └───────────────────┬───────────────────────────┘
-                       │  (if the internet betrays you)
-                       ▼
-   ┌─────────────────────────────────────────────┐
-   │  TIER 2:  INTELLIGENT LOCAL CACHE             │
-   │  ↳ rates_cache.json · auto-expires in 24h     │
-   │     Speed of light. Cost of zero.             │
-   └───────────────────┬───────────────────────────┘
-                       │  (if all hope is lost)
-                       ▼
-   ┌─────────────────────────────────────────────┐
-   │  TIER 3:  DOOMSDAY FALLBACK PROTOCOL          │
-   │  ↳ Hardcoded rates. The app NEVER dies.       │
-   │     For when civilization does.               │
-   └─────────────────────────────────────────────┘
-```
+Original-Commit: 1a431f630f32f57b2b93e8c1d1df5aab4b9cae38.
+Original-Lizenz unverändert beigelegt. Die ursprüngliche README liegt unter legacy/.
+Geprüft auf dem verfügbaren Windows-11-System (x64). Andere Windows-Versionen
+und PCs sind nicht separat geprüft. Externer Kursdienst kann ausfallen.
+Keine automatischen Updates. Kein Installer erforderlich.
 
-### 🌍 Polyglot Global Reach
-Fully localized for **four (4) world languages**, covering a combined addressable market of **billions** of potential users:
-
-- 🇬🇧 **English** — the lingua franca of commerce
-- 🇩🇪 **Deutsch** — engineering precision, linguistically
-- 🇸🇪 **Svenska** — Scandinavian elegance
-- 🇰🇷 **한국어** — the future is Seoul
-
-### 💫 Premium User Experience Suite
-- **Adaptive Dark Theme** engineered by a single `THEME` dictionary for total chromatic control
-- **One-Click Bidirectional Swap (⇅)** — invert your conversion at the speed of thought
-- **Live Freshness Telemetry** — a colour-coded status bar reveals whether your rates are *live* 🟢, *cached* 🟡, or *post-apocalyptic* 🔴
-- **Manual Refresh Override (↻)** — for the discerning user who demands control
-- **Enter-to-Convert** keyboard acceleration for power users
-
----
-
-## 📦 INSTALLATION
-
-> *Deploying QuantumFX™ is a frictionless onboarding experience.*
-
-### Prerequisites
-- Python 3.13+ (the platform of champions)
-- An internet connection (optional, thanks to Tier 2 & 3)
-- A willingness to convert currencies
-
-### One (1) Dependency. That's It.
-QuantumFX™ runs almost entirely on the Python Standard Library™ because we believe in **lean, sustainable engineering**. The sole external dependency is the battle-tested `requests` library:
-
-```bash
-pip install requests
-```
-
-If your system has multiple Python installations, invoke pip through your exact interpreter for **deterministic deployment**:
-
-```powershell
-& "C:/Users/lstar/AppData/Local/Programs/Python/Python313/python.exe" -m pip install requests
-```
-
-### Launch the Platform
-```bash
-python currency_converter.py
-```
-
-🎉 **Congratulations.** You are now operating mission-critical financial infrastructure.
-
----
-
-## 🏗️ SYSTEM ARCHITECTURE
-
-```
-QuantumFX™ Platform
-│
-├── 🌐 pick_language()          → Multilingual onboarding gateway
-│
-├── 💹 load_rates()             → Tri-Tier Resilient Acquisition Engine
-│   ├── fetch_rates_from_api()  → Live ECB ingestion
-│   ├── rates_cache.json        → Sub-millisecond local persistence layer
-│   └── FALLBACK_RATES          → Doomsday continuity protocol
-│
-└── 🖥️ CurrencyConverter        → Enterprise presentation tier
-    ├── THEME{}                 → Centralized design system
-    ├── LANGUAGES{}             → Globalization matrix
-    └── convert()               → The actual math (it's division)
-```
-
----
-
-## ⚙️ CONFIGURATION
-
-All mission parameters are exposed in a centralized command console (the top of the file):
-
-| Parameter | Description | Default |
-|-----------|-------------|:-------:|
-| `CACHE_MAX_AGE_HOURS` | Rate freshness tolerance window | `24` |
-| `API_URL` | The quantum data source | Frankfurter |
-| `SUPPORTED_CURRENCIES` | Approved monetary instruments | 8 currencies |
-| `THEME` | Total visual identity control | Premium Dark |
-
-> 💡 **Pro Tip:** Set `CACHE_MAX_AGE_HOURS = 0` to force a fresh live pull on every single launch, for the truly real-time-obsessed.
-
----
-
-## 📊 PERFORMANCE METRICS
-
-- **Conversion Latency:** Imperceptible to the human nervous system
-- **Supported Currencies:** 8 (and infinitely scalable\*\*\*\*)
-- **Crash Rate:** 0% (the fallback chain refuses to let it die)
-- **Lines of Genius:** ~350
-- **Investor Interest:** Theoretical
-
-\*\*\*\* *Scalability limited only by what the API returns.*
-
----
-
-## 🗺️ ROADMAP TO WORLD DOMINATION
-
-- [x] Convert currencies
-- [x] Not crash when offline
-- [x] Look extremely professional
-- [ ] Add 200 more currencies
-- [ ] Historical rate charting
-- [ ] Mobile app (iOS, Android, smart fridge)
-- [ ] IPO
-- [ ] Acquire a competitor purely for the press release
-- [ ] Buy a small island
-
----
-
-## 🛡️ SECURITY & COMPLIANCE
-
-QuantumFX™ stores **zero personal data**, makes **zero tracking calls**, and harbors **zero ulterior motives**. The only network request it makes is a single, transparent, read-only call to a public European Central Bank data feed. Your financial curiosity remains entirely your own.
-
-*GDPR-friendly by virtue of not caring who you are.*
-
----
-
-## 📜 LICENSE
-
-Proprietary Genius License v1.0 — *"Built with love, deployed with confidence."*
-For educational and world-changing purposes.
-
----
-
-<div align="center">
-
-### Engineered with obsessive attention to detail.
-
-**QuantumFX™** — *Because money should speak every language.*
-
-*A wholly independent student project that happens to look like it costs €4.2M/year to maintain.*
-
-</div>
+Lokale Weiterentwicklung: Es wurde nichts in das öffentliche Original-Repository
+gepusht und kein GitHub-Release veröffentlicht.
