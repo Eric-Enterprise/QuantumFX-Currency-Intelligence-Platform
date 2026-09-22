@@ -1,11 +1,13 @@
-# QuantumFX 2.1 · Prüfbericht
+# QuantumFX 2.2 · Prüfbericht
 
 Prüfdatum: 22. September 2026.
 
 ## Erfolgreich geprüft
 
-- 71 automatisierte Tests bestanden: 55 Tests der Berechnungs-, Speicher-,
-  Kurs- und Spiellogik sowie 16 Tests mit echter Tk-Oberfläche.
+- 75 automatisierte Tests bestanden: 55 Tests der Berechnungs-, Speicher-,
+  Kurs- und Spiellogik sowie 20 Tests mit echter Tk-Oberfläche.
+- Zusätzlich: ungültige Beträge und Kopierzustände, Währungssuche per Tastatur,
+  deaktivierte Schaltflächen und erhaltene Gebühren beim Einklappen der Felder.
 - Dezimalrechnung mit Kreuzkursen und Gebühren; Grenzwerte, leere und ungültige
   Eingaben, Rundung, fehlende Währungen und Gebühren über dem Ausgangsbetrag.
 - Validierung von API und Cache; beschädigte Dateien, zukünftige Datumswerte,
@@ -29,7 +31,7 @@ Prüfdatum: 22. September 2026.
 
 ## Prüfung der fertigen EXE
 
-Der neue 2.1-Build wurde erfolgreich als verpackte EXE gestartet. Der integrierte
+Der neue 2.2-Build wurde erfolgreich als verpackte EXE gestartet. Der integrierte
 Selbsttest meldete ok: true; der Prozess endete mit Exit-Code 0. Geprüft wurden
 unter anderem Umrechnung, Verlauf, Gebührenvergleich und Initialisierung von Snake.
 Die frühere Windows-Startblockade trat bei diesem Build nicht auf. Die EXE ist

@@ -1,10 +1,22 @@
-# QuantumFX 2.1 · Windows Desktop
+# QuantumFX 2.2 · Windows Desktop
 
 Deutschsprachiger Währungsrechner mit Tagesreferenzkursen, Kursdiagrammen,
 Gebührenvergleich und lokalem Verlauf. Weiterentwicklung von
 https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform
 
-## Neu in 2.1 · Weiterentwickelt von Eric
+## Neu in 2.2 · Liquid Glass
+
+Geschichtete Glasoptik mit Farbverläufen, Lichtkanten und animierten Schaltflächen.
+Die Glasflächen werden in der Anwendung gezeichnet und bleiben gut lesbar.
+Alle wichtigen Aktionen haben skalierbare Linien-Icons und Textbeschriftungen.
+Kurze Navigationsnamen, Hilfetexte bei Mauszeiger oder Tastaturfokus und deutliche
+Von-/Nach-Felder machen den Ablauf verständlicher. Optionale Gebühren können
+aufgeklappt werden; eingetragene Werte bleiben beim Einklappen erhalten und werden
+als aktiv gekennzeichnet. Ungültige Beträge werden am Feld markiert. Kopieren ist
+erst mit einem gültigen aktuellen Ergebnis möglich. Strg+F öffnet die Währungssuche.
+Tabellen haben abwechselnde Zeilenfarben und horizontale Scrollleisten.
+
+## Funktionen seit 2.1 · Weiterentwickelt von Eric
 
 Die neue Oberfläche startet im Vollbild mit Seitenleiste, violetten und mintfarbenen
 Akzenten, animierten Schaltflächen, Diagrammaufbau und Ergebnisrückmeldung.

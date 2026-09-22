@@ -170,3 +170,47 @@ def test_reduced_motion_and_credit(app):
     app.animator.run("test", results.append)
     assert results == [1.0]
     assert app.store.prefs["animations"] is False
+
+
+def test_copy_only_for_current_valid_result(app):
+    assert not app.copy_btn.disabled
+    app.amount.set("abc")
+    assert app.copy_btn.disabled
+    app.calculate()
+    assert app.copy_btn.disabled
+    assert app.amount_entry.cget("style") == "Invalid.TEntry"
+    app.amount.set("100")
+    app.calculate(save=False)
+    assert not app.copy_btn.disabled
+    assert app.amount_entry.cget("style") == "TEntry"
+
+
+def test_search_shortcut_targets_search(app):
+    app.focus_search()
+    app.root.update()
+    assert app.tabs.select() == str(app.markets)
+    assert app.root.focus_get() == app.search_entry
+
+
+def test_disabled_button_does_not_invoke(app):
+    invoked = []
+    original = app.copy_btn.command
+    app.copy_btn.command = lambda: invoked.append(True)
+    app.copy_btn.configure(state="disabled")
+    app.copy_btn.invoke()
+    assert invoked == []
+    app.copy_btn.configure(state="normal")
+    app.copy_btn.invoke()
+    assert invoked == [True]
+    app.copy_btn.command = original
+
+
+def test_collapsed_fees_keep_values_and_show_active_state(app):
+    assert not app.fees_expanded
+    app.toggle_fees()
+    app.percent.set("2")
+    app.toggle_fees()
+    assert not app.fees_expanded and "aktiv" in app.fee_toggle.text
+    app.amount.set("100")
+    app.calculate(save=False)
+    assert app.last_result[0]["fee"] == 2

@@ -1,3 +1,13 @@
+# Änderungen in 2.2.0
+
+- Liquid-Glass-Optik mit geschichteten Farbverläufen, Lichtkanten und Rundungen.
+- Gezeichnete Linien-Icons mit Text, Fokusrahmen und Hinweisen per Maus/Tastatur.
+- Vereinfachte Navigation und klare Schrittfolge mit Von-/Nach-Beschriftungen.
+- Aufklappbare Gebührenfelder mit Hinweis auf weiterhin aktive Gebühren.
+- Skalierende Ergebnisanzeige, klare Eingabefehler und sichere Kopierbedienung.
+- Währungssuche per Strg+F, Zurücksetzen und besser lesbare Tabellen.
+- Besser angeordnete Exportaktionen in kleineren Fenstern.
+
 # Änderungen in 2.1.0
 
 - Moderne Vollbildoberfläche mit Seitenleiste, Hero-Bereich und responsivem Rechnerlayout.
