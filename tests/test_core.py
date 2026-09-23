@@ -48,9 +48,9 @@ def test_bad_rates(rates):
 
 
 def test_rounding():
-    assert money(D("1.005"), "EUR") == "1,01"
-    assert money(D("1234.5"), "JPY") == "1.235"
-    assert money(D("0.004"), "USD") == "0,00"
+    assert money(D("1.005"), "EUR") == "1.01"
+    assert money(D("1234.5"), "JPY") == "1,235"
+    assert money(D("0.004"), "USD") == "0.00"
 
 
 def payload():
@@ -79,7 +79,7 @@ def test_corrupt_cache_offline(tmp_path):
 def test_live_data_survives_cache_write_failure(tmp_path):
     with patch("quantumfx.core.atomic_json", side_effect=PermissionError):
         result = RateService(tmp_path, lambda url: payload()).latest()
-    assert result.source == "online" and "nicht gespeichert" in result.warning
+    assert result.source == "online" and "could not be saved" in result.warning
 
 
 @pytest.mark.parametrize("mutation", [lambda p: p.update(base="USD"), lambda p: p.update(date="bad"),
@@ -111,7 +111,7 @@ def test_history_online_and_cache(tmp_path):
 
 
 def test_history_failure_no_fabrication(tmp_path):
-    with pytest.raises(ValueError, match="nicht verfügbar"):
+    with pytest.raises(ValueError, match="unavailable"):
         RateService(tmp_path, fail).history("EUR", "USD", 90)
     points, source = RateService(tmp_path, fail).history("EUR", "EUR", 90)
     assert source == "identity" and all(p[1] == 1 for p in points)
@@ -157,6 +157,6 @@ def test_malformed_local_data(tmp_path):
 
 def test_csv_unicode_decimal_and_formula_escape(tmp_path):
     path = tmp_path / "out.csv"
-    export_csv(path, [{"a": "=1+1", "b": "123.456", "c": "Währung"}], ["a", "b", "c"])
+    export_csv(path, [{"a": "=1+1", "b": "123.456", "c": "Currency €"}], ["a", "b", "c"])
     with path.open(encoding="utf-8-sig", newline="") as f:
-        assert list(csv.DictReader(f, delimiter=";")) == [{"a": "'=1+1", "b": "123.456", "c": "Währung"}]
+        assert list(csv.DictReader(f, delimiter=";")) == [{"a": "'=1+1", "b": "123.456", "c": "Currency €"}]

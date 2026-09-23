@@ -1,133 +1,133 @@
 <div align="center">
 
-![QuantumFX – Währungen. Klar im Blick.](assets/readme-banner.svg)
+![QuantumFX — Currencies. Clearly.](assets/readme-banner.svg)
 
-**Dein Währungsrechner für den Windows-Desktop.**
+**Your currency companion for the Windows desktop.**
 
-Kurse vergleichen, Gebühren verstehen und Umrechnungen im Blick behalten.
+Compare rates, understand fees, and keep your conversions in view.
 
-[![Version](https://img.shields.io/badge/Version-2.2.0-a998ff?style=flat-square)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/tag/v2.2.0)
+[![Version](https://img.shields.io/badge/Version-2.2.1-a998ff?style=flat-square)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/tag/v2.2.1)
 ![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011%20%C2%B7%20x64-72e7cf?style=flat-square)
-![Sprache](https://img.shields.io/badge/Oberfl%C3%A4che-Deutsch-c8c3ef?style=flat-square)
+![Language](https://img.shields.io/badge/Interface-English-c8c3ef?style=flat-square)
 [![Build](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/actions/workflows/python-app.yml/badge.svg)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/actions/workflows/python-app.yml)
 
-### [↓ QuantumFX.exe herunterladen](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX.exe)
+### [↓ Download QuantumFX.exe](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX.exe)
 
-**Keine Installation. Kein Konto. Python bereits enthalten.**
+**No installation. No account. Python included.**
 
-[Alle Downloads](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/latest) · [Funktionen](#-was-quantumfx-kann) · [Schnellstart](#-in-einer-minute-startklar) · [Entwicklung](#-für-entwickler)
+[All downloads](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/latest) · [Features](#-what-quantumfx-can-do) · [Quick start](#-ready-in-a-minute) · [Development](#-for-developers)
 
 </div>
 
 ---
 
-## ✨ Was QuantumFX kann
+## ✨ What QuantumFX can do
 
-Eine ruhige, dunkle Oberfläche mit violetten und mintfarbenen Akzenten, abgerundeten Glasflächen und klar beschrifteten Icons. Animationen geben Rückmeldung und lassen sich jederzeit abschalten. Im Vollbild bleibt viel Platz für das Wesentliche; kleinere Fenster passen die Anordnung automatisch an.
+A calm, dark interface with purple and mint accents, rounded glass-style surfaces, and clearly labeled icons. Optional animations provide feedback, fullscreen gives you room to focus, and smaller windows automatically adapt the layout.
 
-| | Funktion | Dein Nutzen |
+| | Feature | What you get |
 | :---: | :--- | :--- |
-| 💱 | **Währungsrechner** | Verfügbare Währungspaare mit Dezimalrechnung umrechnen und direkt tauschen. |
-| 📈 | **Kursdiagramme** | Historische Tageskurse für 30, 90 oder 365 Tage ansehen und Werte per Maus ablesen. |
-| ⚖️ | **Gebührenvergleich** | Drei eigene Angebote mit prozentualen und festen Gebühren vergleichen. |
-| ⭐ | **Favoriten & Suche** | Häufig verwendete Paare speichern und Währungen schnell finden. |
-| 🗂️ | **Verlauf & Export** | Bis zu 1.000 Umrechnungen lokal behalten; Verlauf, Kurse und Diagrammdaten als CSV exportieren. |
-| 📴 | **Gespeicherte Kurse** | Den zuletzt abgerufenen Kursstand auch ohne Verbindung verwenden. |
-| 🐍 | **Snake Arcade** | Eine Pause einlegen: drei Geschwindigkeiten, flüssige Bewegung und lokaler Highscore. |
+| 💱 | **Currency converter** | Convert available currency pairs using decimal arithmetic and swap currencies instantly. |
+| 📈 | **Rate charts** | Explore historical daily rates over 30, 90, or 365 days; hover to inspect values. |
+| ⚖️ | **Fee comparison** | Compare three offers with your own percentage and fixed fees. |
+| ⭐ | **Favorites & search** | Save frequently used pairs and find currencies quickly. |
+| 🗂️ | **History & export** | Keep up to 1,000 conversions locally; export history, rates, and chart data as CSV. |
+| 📴 | **Saved rates** | Use the last retrieved rate snapshot when a connection is unavailable. |
+| 🐍 | **Snake Arcade** | Take a break with three speeds, smooth movement, and a locally saved high score. |
 
-## 🚀 In einer Minute startklar
+## 🚀 Ready in a minute
 
-1. **[QuantumFX.exe herunterladen](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX.exe)** und per Doppelklick öffnen.
-2. **Betrag und Währungen wählen**, zum Beispiel `100` von EUR nach USD.
-3. Bei Bedarf **Gebühren aufklappen** und eintragen.
-4. **Umrechnen & speichern** anklicken. Das Ergebnis erscheint sofort und bleibt im lokalen Verlauf.
+1. **[Download QuantumFX.exe](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX.exe)** and double-click to launch.
+2. **Enter an amount and choose currencies**, such as `100` from EUR to USD.
+3. Optionally expand **Add fees** and enter your deductions.
+4. Select **Convert & save**. Your result appears immediately and is saved in local history.
 
-Für Kursdiagramme **Verlauf laden** wählen. Nach einem Wechsel des Währungspaars oder Zeitraums erneut laden.
+Select **Load history** to display a rate chart. Reload after changing the currency pair or period.
 
-> **Windows 10/11 · 64 Bit:** Kein Installer und keine separate Python-Installation erforderlich. Beim ersten Start kann das Entpacken einige Sekunden dauern. Die EXE ist nicht digital signiert. Getestet wurde auf Windows 11 x64; andere PCs wurden nicht separat geprüft.
+> **Windows 10/11 · 64-bit:** No installer or separate Python installation is required. Unpacking the embedded runtime may take a few seconds on first launch. The EXE is not digitally signed. Tested on Windows 11 x64; other PCs have not been separately verified.
 
 ### Downloads
 
-| Datei | Inhalt |
+| File | Contents |
 | :--- | :--- |
-| [**QuantumFX.exe**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX.exe) | Direkt ausführbare Windows-Anwendung. |
-| [**Windows-Paket (.zip)**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX-2.2-Windows-x64.zip) | EXE, Anleitung, Prüfbericht und Lizenzhinweise. |
-| [**SHA256-Prüfsummen**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/SHA256SUMS.txt) | Prüfsummen zum Abgleichen der Downloads. |
+| [**QuantumFX.exe**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX.exe) | Ready-to-run Windows application. |
+| [**Windows package (.zip)**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX-2.2.1-Windows-x64.zip) | EXE, guide, verification report, and license notices. |
+| [**SHA256 checksums**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/SHA256SUMS.txt) | Checksums for verifying downloaded files. |
 
-## ⌨️ Weniger klicken, schneller arbeiten
+## ⌨️ Less clicking, faster results
 
-| Taste | Aktion |
+| Shortcut | Action |
 | :--- | :--- |
-| `Enter` | Im Rechner umrechnen |
-| `Strg` + `F` | Währungssuche öffnen |
-| `Strg` + `R` | Kurse aktualisieren |
-| `Strg` + `S` | Ausgangs- und Zielwährung tauschen |
-| `F11` | Vollbild ein- oder ausschalten |
-| `Esc` | Vollbild verlassen und Snake pausieren |
+| `Enter` | Convert in the calculator |
+| `Ctrl` + `F` | Open currency search |
+| `Ctrl` + `R` | Refresh rates |
+| `Ctrl` + `S` | Swap source and target currencies |
+| `F11` | Toggle fullscreen |
+| `Esc` | Leave fullscreen and pause Snake |
 
-**Snake:** Spielfeld anklicken, mit Pfeiltasten oder `WASD` steuern, mit der Leertaste pausieren und mit `Enter` neu beginnen. Beim Bereichswechsel pausiert das Spiel automatisch.
+**Snake:** Click the board, steer with arrow keys or `WASD`, pause with Space, and start a new game with `Enter`. Switching sections pauses the game automatically.
 
 <details>
-<summary><strong>Beträge, Gebühren und Rundung</strong></summary>
+<summary><strong>Amounts, fees, and rounding</strong></summary>
 
-Beträge ohne Tausendertrennzeichen eingeben: `1234,56` oder `1234.56`. Negative Werte, Exponentialschreibweise, mehr als acht Nachkommastellen und Beträge über einer Billion werden abgewiesen.
+Enter amounts without thousands separators: `1234.56` or `1234,56`. Negative values, scientific notation, more than eight decimal places, and amounts above one trillion are rejected.
 
-Feste Gebühren gelten in der Ausgangswährung. Berechnet wird:
+Fixed fees use the source currency. The calculation is:
 
 ```text
-(Betrag − Betrag × Prozent / 100 − Fixgebühr) × Zielkurs / Basiskurs
+(amount − amount × percentage / 100 − fixed fee) × target rate / base rate
 ```
 
-Nur die Anzeige wird gerundet (`ROUND_HALF_UP`); CSV-Dateien enthalten die ungerundeten Dezimalwerte. Der Gebührenvergleich verwendet für alle Angebote denselben Referenzkurs. Individuelle Wechselkursaufschläge sind nicht enthalten.
+Only displayed amounts are rounded (`ROUND_HALF_UP`) and use English formatting, such as `1,234.56`. CSV exports retain unrounded decimal values, use UTF-8 with a BOM, and separate columns with semicolons. Fee comparison uses the same reference rate for every offer; individual exchange-rate markups are not included.
 
-Eingetragene Gebühren bleiben auch beim Einklappen aktiv und werden entsprechend gekennzeichnet.
+Entered fees remain active when their fields are collapsed, with a visible indicator.
 
 </details>
 
-## 🌐 Welche Kurse du siehst
+## 🌐 Understanding your rates
 
-QuantumFX bezieht **Tagesreferenzkurse über Frankfurter v1 / EZB**. Beim geprüften Online-Abruf standen 30 Währungen zur Verfügung; der tatsächliche Umfang hängt vom Anbieter ab. Es handelt sich um Referenzwerte, nicht um Echtzeitkurse oder garantierte Bankangebote. An Wochenenden und Feiertagen kann das Kursdatum zurückliegen.
+QuantumFX uses **daily reference rates from Frankfurter v1 / the ECB**. The verified online request returned 30 currencies; availability depends on the provider. These are reference values, not real-time prices or guaranteed bank offers. Rate dates may be older on weekends and holidays.
 
-| Status | Bedeutung |
+| Status | Meaning |
 | :--- | :--- |
-| **Online** | Validierte Daten mit dem tatsächlichen Kursdatum. |
-| **Offline / gespeicherte Kurse** | Der letzte lokal gespeicherte Stand; dieser kann älter sein. |
-| **DEMO** | Undatierte Beispielwerte zum Ausprobieren, auch in Verlauf und CSV als DEMO gekennzeichnet. |
+| **Online** | Validated rates with their actual rate date. |
+| **Offline / saved rates** | The last locally saved snapshot, which may be older. |
+| **DEMO** | Undated samples for trying the app, also marked as DEMO in history and CSV exports. |
 
-Diagramme zeigen ausschließlich abgerufene oder gespeicherte historische Daten. Fehlende Daten werden nicht erfunden.
+Charts contain only retrieved or saved historical data. Missing values are never invented.
 
-## 🔒 Deine Daten bleiben übersichtlich
+## 🔒 Your data, kept local
 
-**Kein Konto, keine Telemetrie, keine Broker-Verbindung.** Beträge und Umrechnungsverlauf werden nicht an den Kursanbieter übertragen. Kursabfragen enthalten Währungen, Zeiträume und normale Verbindungsdaten.
+**No account, no telemetry, no broker connection.** Conversion amounts and history are not sent to the rate provider. Requests contain currencies, date ranges, and standard connection information.
 
-Die Anwendung speichert ihre Daten unter `%LOCALAPPDATA%\QuantumFX`. Die EXE benötigt keine Installation; Einstellungen und Verlauf liegen separat in diesem Benutzerordner.
+Application data is stored under `%LOCALAPPDATA%\QuantumFX`. The EXE needs no installation; preferences and history are saved separately in this user folder. Existing profiles remain compatible with the English release.
 
 <details>
-<summary><strong>Gespeicherte Dateien und Startoptionen</strong></summary>
+<summary><strong>Stored files and launch options</strong></summary>
 
-| Datei | Inhalt |
+| File | Contents |
 | :--- | :--- |
-| `settings.json` | Einstellungen, Favoriten und Spiel-Highscore |
-| `rates.json` | Letzter Kursstand mit Kurs- und Abrufdatum |
-| `chart-*.json` | Gespeicherte Zeitreihen |
-| `history.json` | Bis zu 1.000 Umrechnungen |
-| `QuantumFX.log` | Fehlerprotokoll; maximal drei Dateien mit jeweils etwa 1 MB |
+| `settings.json` | Preferences, favorites, and Snake high score |
+| `rates.json` | Last rate snapshot with rate and retrieval dates |
+| `chart-*.json` | Saved historical series |
+| `history.json` | Up to 1,000 conversions |
+| `QuantumFX.log` | Error log; up to three files of approximately 1 MB each |
 
 ```powershell
-# Im normalen Fenster starten
+# Start in a regular window
 .\QuantumFX.exe --windowed
 
-# Automatischen Kursabruf beim Start überspringen
+# Skip the automatic rate request at startup
 .\QuantumFX.exe --offline
 ```
 
-Manuelle Abrufe bleiben mit `--offline` möglich. `QUANTUMFX_DATA_DIR` setzt einen eigenen Datenordner für getrennte Profile oder Tests. Über **Verlauf löschen** lassen sich die gespeicherten Umrechnungen entfernen. Automatische Programmupdates sind nicht enthalten.
+Manual requests remain available with `--offline`. Set `QUANTUMFX_DATA_DIR` to use a separate data folder for profiles or tests. **Clear history** removes saved conversions. Automatic application updates are not included.
 
 </details>
 
-## 🛠️ Für Entwickler
+## 🛠️ For developers
 
-**Python 3.10+ mit Tk.** Die Anwendung selbst benötigt keine externen Python-Laufzeitpakete. Test- und Build-Werkzeuge stehen in `requirements-dev.txt`.
+**Python 3.10+ with Tk.** The application needs no external Python runtime packages. Test and build dependencies are listed in `requirements-dev.txt`.
 
 ```powershell
 git clone https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform.git
@@ -138,61 +138,61 @@ python -m venv .venv
 ```
 
 <details>
-<summary><strong>Tests ausführen und Windows-EXE bauen</strong></summary>
+<summary><strong>Run tests and build the Windows EXE</strong></summary>
 
 ```powershell
-# Logiktests
+# Logic tests
 .venv/Scripts/python.exe -m pytest
 
-# Zusätzlich die echte Tk-Oberfläche testen
+# Include the real Tk interface tests
 $env:QUANTUMFX_GUI_TESTS = '1'
 .venv/Scripts/python.exe -m pytest
 
-# Eigenständige Windows-EXE erstellen
+# Build a standalone Windows executable
 ./build.ps1 -Python .venv/Scripts/python.exe
 ```
 
-Das Ergebnis liegt unter `dist/QuantumFX.exe`. Ein Icon ist enthalten; nur dessen Neugenerierung über `tools/create_icon.py` benötigt Pillow.
+The result is `dist/QuantumFX.exe`. An icon is included; regenerating it with `tools/create_icon.py` requires Pillow.
 
-Integrierter Selbsttest mit temporärem Profil:
+Run the packaged self-test with a temporary profile:
 
 ```powershell
-./dist/QuantumFX.exe --smoke-test C:/Pfad/smoke-result.json
+./dist/QuantumFX.exe --smoke-test C:/Path/smoke-result.json
 ```
 
-Nach Prozessende enthält die JSON-Datei `ok: true` oder eine Fehlermeldung. Der GitHub-Actions-Workflow führt Tests und Windows-Build aus und stellt erfolgreiche Builds zusätzlich als Artefakt bereit.
+After the process exits, the JSON file contains `ok: true` or an error. GitHub Actions runs the tests and Windows build, and makes successful builds available as downloadable artifacts.
 
 </details>
 
-### Projektaufbau
+### Project structure
 
 ```text
 quantumfx/
-├── app.py       Oberfläche und Bedienabläufe
-├── core.py      Kurse, Berechnungen und lokale Speicherung
-├── ui.py        Gestaltung, Icons und Animationen
-└── snake.py     Spielregeln und Arcade-Oberfläche
-main.py          Programmeinstieg
-assets/          Grafiken und Anwendungsicon
-tests/           Tests der neuen Anwendung
-tools/           Werkzeuge für Build-Pakete und Icon
-legacy/          Archiv des Originalprojekts
+├── app.py       Interface and user workflows
+├── core.py      Rates, calculations, and local storage
+├── ui.py        Styling, icons, and animations
+└── snake.py     Game rules and arcade interface
+main.py          Application entry point
+assets/          Graphics and application icon
+tests/           Tests for the current application
+tools/           Release packaging and icon utilities
+legacy/          Original project archive
 ```
 
-**Release-Prüfung:** 75 automatisierte Tests und der Selbsttest der fertigen EXE bestanden. Einzelheiten stehen im [Prüfbericht](PRUEFBERICHT.md); Neuerungen im [Changelog](CHANGELOG.md).
+See the [verification report](VERIFICATION.md) for test results and limitations, and the [changelog](CHANGELOG.md) for release history.
 
-## 📚 Herkunft & Lizenz
+## 📚 Origin & license
 
-QuantumFX basiert auf dem [Originalprojekt von oneiric-hammer](https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform), Ausgangsstand `1a431f630f32f57b2b93e8c1d1df5aab4b9cae38`. Die [Original-Lizenz](LICENSE) bleibt unverändert erhalten. Weitere Laufzeitlizenzen liegen unter [licenses/](licenses/).
+QuantumFX is based on the [original project by oneiric-hammer](https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform), starting from commit `1a431f630f32f57b2b93e8c1d1df5aab4b9cae38`. The [original license](LICENSE) is preserved. Bundled runtime license notices are in [licenses/](licenses/).
 
-Die ursprüngliche Oberfläche mit vier Sprachen und die ursprüngliche README sind unter [legacy/](legacy/) archiviert. Die aktuelle Desktop-Oberfläche ist auf Deutsch; die alte Anwendung gehört nicht zur neuen EXE.
+The original multilingual interface and README remain archived under [legacy/](legacy/). This historical archive retains its original language resources. The current application, documentation, and release packages are in English; the original application is not included in the new EXE.
 
 ---
 
 <div align="center">
 
-**QuantumFX · Währungen. Klar im Blick.**
+**QuantumFX · Currencies. Clearly.**
 
-[Download](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/latest) · [Änderungen](CHANGELOG.md) · [Fehler melden](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/issues)
+[Download](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/latest) · [Changelog](CHANGELOG.md) · [Report an issue](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/issues)
 
 </div>

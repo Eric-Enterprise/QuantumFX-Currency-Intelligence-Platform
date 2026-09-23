@@ -69,7 +69,7 @@ class Config:
     MAX_FAVORITES = 50
     LANGUAGES = {
         "EN": "🇬🇧 English",
-        "DE": "🇩🇪 Deutsch",
+        "DE": "🇩🇪 German",
         "SV": "🇸🇪 Svenska",
         "KO": "🇰🇷 한국어",
         "FR": "🇫🇷 Français",

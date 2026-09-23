@@ -135,7 +135,7 @@
 - **Connection Pooling** for API requests
 
 ### 🎯 **User Experience Excellence**
-- **8 Languages** (English, Deutsch, Svenska, 한국어, Français, Español, 中文, 日本語)
+- **8 Languages** (English, German, Swedish, Korean, French, Spanish, Chinese, Japanese)
 - **Keyboard Shortcuts** (Enter to convert, Tab navigation)
 - **Drag-and-Drop** currency selection
 - **One-Click Actions** (swap, refresh, clear)

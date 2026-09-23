@@ -68,17 +68,17 @@ class SnakePanel(ttk.Frame):
         saved = store.prefs.get("snake_highscore", 0)
         self.highscore = saved if isinstance(saved, int) and 0 <= saved <= 4000 else 0
         self.caption = tk.StringVar()
-        self.notice = tk.StringVar(value="Pfeiltasten oder WASD · Leertaste pausiert · Enter startet neu")
+        self.notice = tk.StringVar(value="Arrow keys or WASD · Space to pause · Enter to restart")
         head = ttk.Frame(self)
         head.pack(fill="x", pady=(0, 14))
-        ttk.Label(head, text="Eine kleine Pause. Eine große Schlange.", font=("Segoe UI", 19, "bold")).pack(anchor="w")
+        ttk.Label(head, text="A little break. A longer snake.", font=("Segoe UI", 19, "bold")).pack(anchor="w")
         ttk.Label(head, textvariable=self.caption, foreground=MINT, font=("Segoe UI", 12)).pack(anchor="w", pady=8)
         actions = ttk.Frame(self)
         actions.pack(fill="x")
-        MotionButton(actions, "Neues Spiel", self.start, animator, True).pack(side="left")
-        self.pause_btn = MotionButton(actions, "Pause / Weiter", self.toggle, animator)
+        MotionButton(actions, "New game", self.start, animator, True).pack(side="left")
+        self.pause_btn = MotionButton(actions, "Pause / Resume", self.toggle, animator)
         self.pause_btn.pack(side="left", padx=10)
-        speeds = ttk.Combobox(actions, textvariable=self.speed, values=("Entspannt", "Normal", "Schnell"), width=12, state="readonly")
+        speeds = ttk.Combobox(actions, textvariable=self.speed, values=("Relaxed", "Normal", "Fast"), width=12, state="readonly")
         speeds.pack(side="left", padx=8)
         speeds.bind("<<ComboboxSelected>>", lambda e: self.pause())
         self.canvas = tk.Canvas(self, background=BG, highlightthickness=0, takefocus=True, height=460)
@@ -91,7 +91,7 @@ class SnakePanel(ttk.Frame):
         self.update_caption()
 
     def update_caption(self):
-        self.caption.set(f"PUNKTE  {self.game.score:03d}     /     BESTLEISTUNG  {self.highscore:03d}")
+        self.caption.set(f"SCORE  {self.game.score:03d}     /     BEST  {self.highscore:03d}")
 
     def start(self):
         self.pause()
@@ -104,7 +104,7 @@ class SnakePanel(ttk.Frame):
 
     def schedule(self):
         if self.running and self.timer is None:
-            delay = {"Entspannt": 170, "Normal": 115, "Schnell": 75}.get(self.speed.get(), 115)
+            delay = {"Relaxed": 170, "Normal": 115, "Fast": 75}.get(self.speed.get(), 115)
             self.timer = self.after(delay, self.tick)
 
     def tick(self):
@@ -119,7 +119,7 @@ class SnakePanel(ttk.Frame):
             try:
                 self.store.save()
             except OSError:
-                self.notice.set("Highscore bleibt für diese Sitzung erhalten; Speichern fehlgeschlagen.")
+                self.notice.set("High score is kept for this session; saving failed.")
         if self.game.over:
             self.running = False
         self.update_caption()
@@ -185,10 +185,10 @@ class SnakePanel(ttk.Frame):
             rounded(c, ox+x*cell+1, oy+y*cell+1, ox+(x+1)*cell-1, oy+(y+1)*cell-1,
                     radius=5, fill=MINT if i == 0 else "#249f85", outline="")
         if not self.running:
-            label = "GEWONNEN!" if self.game.won else ("GAME OVER" if self.game.over else ("PAUSE" if self.started else "SNAKE ARCADE"))
+            label = "YOU WIN!" if self.game.won else ("GAME OVER" if self.game.over else ("PAUSE" if self.started else "SNAKE ARCADE"))
             rounded(c, w/2-150, h/2-44, w/2+150, h/2+44, fill="#1e2940", outline=ACCENT)
             c.create_text(w/2, h/2-10, text=label, fill=TEXT, font=("Segoe UI", 20, "bold"))
-            c.create_text(w/2, h/2+22, text="Neues Spiel / Leertaste", fill=MUTED, font=("Segoe UI", 10))
+            c.create_text(w/2, h/2+22, text="New game / Space", fill=MUTED, font=("Segoe UI", 10))
 
     def destroyed(self, event):
         if event.widget == self:

@@ -44,10 +44,10 @@ class App:
         self.days = tk.StringVar(value="90")
         self.search = tk.StringVar()
         self.status = tk.StringVar()
-        self.result = tk.StringVar(value="Bereit zum Umrechnen")
+        self.result = tk.StringVar(value="Ready to convert")
         self.detail = tk.StringVar()
         self.feedback = tk.StringVar()
-        self.chart_status = tk.StringVar(value="Währungspaar wählen und Kursverlauf laden.")
+        self.chart_status = tk.StringVar(value="Choose a currency pair and load its rate history.")
         self.build()
         for variable in (self.amount, self.percent, self.fixed):
             variable.trace_add("write", lambda *args: self.invalidate_result())
@@ -104,10 +104,10 @@ class App:
         return w
 
     def button(self, parent, text, fn, accent=False):
-        hints = {"⇄": "Ausgangs- und Zielwährung tauschen · Strg+S",
-                 "Umrechnen & speichern  ↗": "Berechnet mit den angezeigten Kursen und speichert das Ergebnis im Verlauf · Enter",
-                 "Vollbild  F11": "Vollbild ein- oder ausschalten · F11. Escape führt zurück ins Fenster.",
-                 "Kurse aktualisieren": "Tagesreferenzkurse im Hintergrund aktualisieren · Strg+R"}
+        hints = {"⇄": "Swap source and target currencies · Ctrl+S",
+                 "Convert & save  ↗": "Convert using the displayed rates and save the result to history · Enter",
+                 "Fullscreen  F11": "Toggle fullscreen · F11. Press Escape to return to a window.",
+                 "Refresh rates": "Refresh daily reference rates in the background · Ctrl+R"}
         return MotionButton(parent, text, fn, self.animator, accent, hint=hints.get(text))
 
     def build(self):
@@ -115,28 +115,28 @@ class App:
         sidebar.pack(side="left", fill="y")
         sidebar.pack_propagate(False)
         tk.Label(sidebar, text="QuantumFX", bg=SIDEBAR, fg=TEXT, font=("Segoe UI", 16, "bold")).pack(anchor="w")
-        tk.Label(sidebar, text="VERSION 2.2", bg=SIDEBAR, fg=ACCENT, font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 28))
+        tk.Label(sidebar, text="VERSION 2.2.1", bg=SIDEBAR, fg=ACCENT, font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 28))
         self.nav = tk.Frame(sidebar, bg=SIDEBAR)
         self.nav.pack(fill="x")
-        self.motion_btn = MotionButton(sidebar, "Effekte an" if self.animator.enabled else "Effekte aus",
+        self.motion_btn = MotionButton(sidebar, "Effects on" if self.animator.enabled else "Effects off",
                                        self.toggle_motion, self.animator, background=SIDEBAR, icon_name="sparkles",
-                                       hint="Animationen ein- oder ausschalten. Die Einstellung bleibt gespeichert.")
+                                       hint="Turn animations on or off. Your preference is saved.")
         self.motion_btn.pack(side="bottom", fill="x", pady=8)
         outer = ttk.Frame(self.root, padding=(24, 18))
         outer.pack(fill="both", expand=True)
         header = ttk.Frame(outer)
         header.pack(fill="x", pady=(0, 18))
-        self.page_title = ttk.Label(header, text="Übersicht", font=("Segoe UI", 23, "bold"))
+        self.page_title = ttk.Label(header, text="Overview", font=("Segoe UI", 23, "bold"))
         self.page_title.pack(side="left")
-        self.button(header, "Schließen", self.close).pack(side="right", padx=(8, 0))
-        self.full_btn = self.button(header, "Vollbild  F11", self.toggle_fullscreen)
+        self.button(header, "Close", self.close).pack(side="right", padx=(8, 0))
+        self.full_btn = self.button(header, "Fullscreen  F11", self.toggle_fullscreen)
         self.full_btn.pack(side="right", padx=8)
-        self.refresh_btn = self.button(header, "Aktualisieren", self.refresh)
+        self.refresh_btn = self.button(header, "Refresh", self.refresh)
         self.refresh_btn.pack(side="right")
         status_line = ttk.Label(outer, textvariable=self.status, foreground=ACCENT, wraplength=1080)
         status_line.pack(fill="x", pady=(0, 15))
         outer.bind("<Configure>", lambda e: status_line.configure(wraplength=max(250, e.width-50)))
-        ttk.Label(outer, text="Frankfurter / EZB · Tagesreferenzkurse · Gebühren sind eigene Annahmen.",
+        ttk.Label(outer, text="Frankfurter / ECB · Daily reference rates · Fees are your own estimates.",
                   style="Muted.TLabel").pack(side="bottom", anchor="w", pady=(12, 0))
         self.tabs = ttk.Notebook(outer)
         self.tabs.pack(fill="both", expand=True)
@@ -147,9 +147,9 @@ class App:
         self.help_tab = ttk.Frame(self.tabs, padding=(0, 22))
         self.snake_tab = ttk.Frame(self.tabs, padding=(0, 16))
         self.nav_buttons = []
-        for frame, title, glyph in [(self.converter, "Rechner", "swap"), (self.markets, "Währungen", "globe"),
-                             (self.compare_tab, "Gebühren", "compare"), (self.history_tab, "Verlauf", "history"),
-                             (self.snake_tab, "Snake", "game"), (self.help_tab, "Hilfe", "help")]:
+        for frame, title, glyph in [(self.converter, "Converter", "swap"), (self.markets, "Currencies", "globe"),
+                             (self.compare_tab, "Fees", "compare"), (self.history_tab, "History", "history"),
+                             (self.snake_tab, "Snake", "game"), (self.help_tab, "Help", "help")]:
             self.tabs.add(frame, text=title)
             nav_btn = MotionButton(self.nav, title, lambda f=frame: self.tabs.select(f), self.animator,
                                    background=SIDEBAR, icon_name=glyph, align="left")
@@ -184,74 +184,74 @@ class App:
                 left.grid_configure(row=1, column=0, columnspan=1)
                 right.grid_configure(row=1, column=1, columnspan=1, pady=0)
         viewport.bind("<Configure>", responsive)
-        self.label(left, "Dein Währungsrechner", 20)
-        self.label(left, "1  Betrag eingeben", muted=True)
+        self.label(left, "Your currency converter", 20)
+        self.label(left, "1  Enter an amount", muted=True)
         self.amount_entry = ttk.Entry(left, textvariable=self.amount, font=("Segoe UI", 19))
         self.amount_entry.pack(fill="x", pady=(0, 6))
-        self.label(left, "Zum Beispiel 1234,56 · ohne Tausendertrennzeichen", muted=True)
-        Tooltip(self.amount_entry, "Komma oder Punkt als Dezimaltrennzeichen, z. B. 1234,56. Enter berechnet und speichert.")
-        self.label(left, "2  Währungen wählen", muted=True)
+        self.label(left, "For example 1234.56 · no thousands separators", muted=True)
+        Tooltip(self.amount_entry, "Use a dot or comma as the decimal separator, e.g. 1234.56. Enter converts and saves.")
+        self.label(left, "2  Choose currencies", muted=True)
         pair = ttk.Frame(left)
         pair.pack(fill="x", pady=(0, 16))
         source = ttk.Frame(pair)
         source.pack(side="left", fill="x", expand=True)
-        self.label(source, "Von", muted=True)
+        self.label(source, "From", muted=True)
         self.base_box = ttk.Combobox(source, textvariable=self.base, width=8, state="readonly")
         self.base_box.pack(fill="x")
         self.button(pair, "⇄", self.swap).pack(side="left", padx=10, pady=(26, 0))
         target = ttk.Frame(pair)
         target.pack(side="left", fill="x", expand=True)
-        self.label(target, "Nach", muted=True)
+        self.label(target, "To", muted=True)
         self.target_box = ttk.Combobox(target, textvariable=self.target, width=8, state="readonly")
         self.target_box.pack(fill="x")
         for box in (self.base_box, self.target_box):
             box.bind("<<ComboboxSelected>>", self.pair_changed)
         self.fees_expanded = False
-        self.fee_toggle = MotionButton(left, "Gebühren hinzufügen · optional", self.toggle_fees,
-                                       self.animator, icon_name="compare", hint="Optionale Prozent- und Fixgebühren öffnen. Ohne Eingabe wird keine Gebühr abgezogen.")
+        self.fee_toggle = MotionButton(left, "Add fees · optional", self.toggle_fees,
+                                       self.animator, icon_name="compare", hint="Show optional percentage and fixed fees. Leave them at zero for no deductions.")
         self.fee_toggle.pack(anchor="w", pady=(0, 10))
         fees = ttk.Frame(left)
         self.fees_container = fees
-        ttk.Label(fees, text="Prozent %").pack(side="left")
+        ttk.Label(fees, text="Percent %").pack(side="left")
         percent_entry = ttk.Entry(fees, textvariable=self.percent, width=6)
         percent_entry.pack(side="left", padx=(8, 18))
-        ttk.Label(fees, text="Fixbetrag").pack(side="left")
+        ttk.Label(fees, text="Fixed fee").pack(side="left")
         fixed_entry = ttk.Entry(fees, textvariable=self.fixed, width=8)
         fixed_entry.pack(side="left", padx=8)
-        Tooltip(percent_entry, "Prozentualer Abzug vom Ausgangsbetrag, zwischen 0 und 100.")
-        Tooltip(fixed_entry, "Fester Abzug in der Von-Währung. Beispiel: 2 bedeutet 2 EUR bei Ausgangswährung EUR.")
-        self.convert_btn = self.button(left, "Umrechnen & speichern  ↗", self.calculate, True)
+        Tooltip(percent_entry, "Percentage deducted from the source amount, from 0 to 100.")
+        Tooltip(fixed_entry, "Fixed deduction in the source currency. For example, 2 means EUR 2 when converting from EUR.")
+        self.convert_btn = self.button(left, "Convert & save  ↗", self.calculate, True)
         self.convert_btn.pack(fill="x")
         result_card = GlassResult(left, self.result, self.detail)
         self.result_card = result_card
         result_card.pack(fill="x", pady=18)
         actions = ttk.Frame(left)
         actions.pack(fill="x")
-        self.copy_btn = self.button(actions, "Kopieren", self.copy)
+        self.copy_btn = self.button(actions, "Copy", self.copy)
         self.copy_btn.pack(side="left")
-        self.button(actions, "★ Paar merken", self.favorite).pack(side="left", padx=8)
+        self.button(actions, "★ Save pair", self.favorite).pack(side="left", padx=8)
         ttk.Label(left, textvariable=self.feedback, foreground="#ffcc80", wraplength=385).pack(fill="x", pady=12)
-        self.label(right, "Kursentwicklung", 20)
+        self.label(right, "Rate trends", 20)
         toolbar = ttk.Frame(right)
         toolbar.pack(fill="x", pady=(0, 12))
-        ttk.Label(toolbar, text="Zeitraum (Tage)", style="Muted.TLabel").pack(side="left")
+        ttk.Label(toolbar, text="Period (days)", style="Muted.TLabel").pack(side="left")
         period = ttk.Combobox(toolbar, textvariable=self.days, values=(30, 90, 365), width=5, state="readonly")
         period.pack(side="left", padx=12)
         period.bind("<<ComboboxSelected>>", self.pair_changed)
-        self.chart_btn = self.button(toolbar, "Verlauf laden", self.load_chart)
+        self.chart_btn = self.button(toolbar, "Load history", self.load_chart)
         self.chart_btn.pack(side="right")
-        self.button(right, "Diagrammdaten als CSV", self.export_chart).pack(anchor="e", pady=(0, 8))
+        self.button(right, "Export chart CSV", self.export_chart).pack(anchor="e", pady=(0, 8))
         self.canvas = tk.Canvas(right, bg=CARD, highlightthickness=0, height=280)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Configure>", lambda e: self.draw_chart())
         self.canvas.bind("<Motion>", self.chart_hover)
         ttk.Label(right, textvariable=self.chart_status, wraplength=540, style="Muted.TLabel").pack(fill="x", pady=12)
-        self.label(right, "Favoriten · Doppelklick zum Öffnen", muted=True)
+        self.label(right, "Favorites · double-click to open", muted=True)
         self.favorites = tk.Listbox(right, bg=CARD, fg=TEXT, selectbackground="#28556a", height=3,
                                    relief="flat", highlightthickness=0, activestyle="none")
         self.favorites.pack(fill="x")
         self.favorites.bind("<Double-Button-1>", self.open_favorite)
-        self.button(right, "Ausgewähltes Paar entfernen", self.remove_favorite).pack(anchor="e", pady=8)
+        self.button(right, "Remove selected pair", self.remove_favorite).pack(anchor="e", pady=8)
         self.fill_favorites()
         self.build_markets()
         self.build_history()
@@ -283,13 +283,13 @@ class App:
             active = number(self.percent.get()) != 0 or number(self.fixed.get()) != 0
         except ValueError:
             active = True
-        self.fee_toggle.configure(text="Gebühren ausblenden" if self.fees_expanded else
-                                   ("Gebühren aktiv · bearbeiten" if active else "Gebühren hinzufügen · optional"))
+        self.fee_toggle.configure(text="Hide fees" if self.fees_expanded else
+                                   ("Fees active · edit" if active else "Add fees · optional"))
 
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen
         self.root.attributes("-fullscreen", self.fullscreen)
-        self.full_btn.configure(text="Fenster  Esc" if self.fullscreen else "Vollbild  F11")
+        self.full_btn.configure(text="Window  Esc" if self.fullscreen else "Fullscreen  F11")
 
     def leave_fullscreen(self):
         if hasattr(self, "snake"):
@@ -300,12 +300,12 @@ class App:
     def toggle_motion(self):
         self.animator.enabled = not self.animator.enabled
         self.animator.stop()
-        self.motion_btn.configure(text="Effekte an" if self.animator.enabled else "Effekte aus")
+        self.motion_btn.configure(text="Effects on" if self.animator.enabled else "Effects off")
         self.store.prefs["animations"] = self.animator.enabled
         try:
             self.store.save()
         except OSError:
-            self.feedback.set("Darstellung konnte nicht gespeichert werden.")
+            self.feedback.set("Could not save display preferences.")
         self.draw_chart()
 
     def page_changed(self, event=None):
@@ -339,58 +339,58 @@ class App:
         return tree
 
     def build_markets(self):
-        self.label(self.markets, "Alle verfügbaren Währungen", 20)
-        self.label(self.markets, "Kurse je 1 Einheit der Ausgangswährung im Rechner. Doppelklick übernimmt die Zielwährung.", muted=True)
+        self.label(self.markets, "All available currencies", 20)
+        self.label(self.markets, "Rates per 1 unit of the converter's source currency. Double-click to select a target currency.", muted=True)
         bar = ttk.Frame(self.markets)
         bar.pack(fill="x")
-        ttk.Label(bar, text="Währung suchen").pack(side="left", padx=(0, 12))
+        ttk.Label(bar, text="Find currency").pack(side="left", padx=(0, 12))
         self.search_entry = ttk.Entry(bar, textvariable=self.search)
         self.search_entry.pack(side="left")
-        Tooltip(self.search_entry, "Nach Währungskürzel suchen, z. B. EUR oder USD · Strg+F")
-        self.button(bar, "Zurücksetzen", lambda: self.search.set("")).pack(side="left", padx=8)
+        Tooltip(self.search_entry, "Search by currency code, e.g. EUR or USD · Ctrl+F")
+        self.button(bar, "Reset", lambda: self.search.set("")).pack(side="left", padx=8)
         self.search.trace_add("write", lambda *args: self.fill_markets())
-        self.button(self.markets, "Kurse als CSV exportieren", self.export_rates).pack(anchor="e", pady=(10, 0))
-        self.market_tree = self.table(self.markets, [("code", "Währung", 120), ("rate", "Kurs", 220),
-                                                     ("base", "Basis", 120), ("date", "Kursdatum / Quelle", 350)])
+        self.button(self.markets, "Export rates as CSV", self.export_rates).pack(anchor="e", pady=(10, 0))
+        self.market_tree = self.table(self.markets, [("code", "Currency", 120), ("rate", "Rate", 220),
+                                                     ("base", "Base", 120), ("date", "Rate date / source", 350)])
         self.market_tree.bind("<Double-Button-1>", self.open_market)
 
     def build_history(self):
-        self.label(self.history_tab, "Deine letzten Umrechnungen", 20)
+        self.label(self.history_tab, "Your recent conversions", 20)
         bar = ttk.Frame(self.history_tab)
         bar.pack(fill="x")
-        self.button(bar, "CSV exportieren", self.export_history).pack(side="right")
-        self.button(bar, "Verlauf löschen", self.clear_history).pack(side="right", padx=8)
-        self.history_tree = self.table(self.history_tab, [("time", "Zeit", 150), ("amount", "Betrag", 120),
-            ("pair", "Währungspaar", 130), ("net", "Ergebnis", 150), ("fee", "Gebühr (Basis)", 120),
-            ("date", "Kursdatum", 110), ("source", "Quelle", 110)])
-        self.label(self.history_tab, "Bis zu 1.000 Einträge werden lokal gespeichert. Dezimalwerte im CSV bleiben ungerundet.", muted=True)
+        self.button(bar, "Export CSV", self.export_history).pack(side="right")
+        self.button(bar, "Clear history", self.clear_history).pack(side="right", padx=8)
+        self.history_tree = self.table(self.history_tab, [("time", "Time", 150), ("amount", "Amount", 120),
+            ("pair", "Currency pair", 130), ("net", "Result", 150), ("fee", "Fee (source)", 120),
+            ("date", "Rate date", 110), ("source", "Source", 110)])
+        self.label(self.history_tab, "Up to 1,000 entries are stored locally. CSV decimal values are not rounded.", muted=True)
 
     def build_help(self):
-        self.label(self.help_tab, "Klarheit über Zahlen und Daten", 22)
+        self.label(self.help_tab, "Understanding your numbers and data", 22)
         text = (
-            "SO FUNKTIONIERT ES\n"
-            "Betrag und Währungspaar wählen. Komma oder Punkt als Dezimaltrennzeichen verwenden; "
-            "keine Tausendertrennzeichen. Prozentuale und fixe Gebühren werden vor der Umrechnung "
-            "vom Ausgangsbetrag abgezogen. Erst die Anzeige wird gerundet.\n\n"
-            "KURSQUELLEN\n"
-            "Online: zuletzt abgerufene Frankfurter-Tagesreferenzkurse der EZB. An Wochenenden und Feiertagen "
-            "kann das Kursdatum zurückliegen. Cache: gespeicherte Kurse mit ursprünglichem Kursdatum. "
-            "DEMO: undatierte Beispielwerte aus dem Originalprojekt, nur zum Ausprobieren. "
-            "Diagramme enthalten ausschließlich abgerufene oder gespeicherte historische Daten.\n\n"
-            "BEDIENUNG\n"
-            "Enter: umrechnen und speichern. Strg+R: Kurse aktualisieren. Strg+S: Währungen tauschen. "
-            "Im Diagramm zeigt die Maus einzelne Datenpunkte. Ein Paarwechsel erfordert einen neuen Diagrammabruf.\n\n"
-            "DATENSCHUTZ\n"
-            "Beträge, Gebühren und Umrechnungsverlauf bleiben auf diesem Computer. Der Kursdienst erhält "
-            "nur Währungspaar, Zeitraum und die üblichen Verbindungsdaten. Keine Anmeldung, keine Telemetrie. "
-            "CSV-Dateien werden ausschließlich am gewählten Speicherort angelegt.\n\n"
-            "LOKALE DATEN\n" + str(self.store.folder) + "\n\n"
-            "QuantumFX 2.2\n"
-            "F11: Vollbild wechseln. Escape: Vollbild verlassen und Snake pausieren. "
-            "Animationen lassen sich in der Seitenleiste abschalten.\n"
-            "Strg+F öffnet die Währungssuche. Hinweise erscheinen bei Mauszeiger oder Tastaturfokus auf Schaltflächen.\n"
-            "Originalprojekt: oneiric-hammer/QuantumFX-Currency-Intelligence-Platform. "
-            "Die Original-Lizenz liegt der Lieferung unverändert bei."
+            "HOW IT WORKS\n"
+            "Choose an amount and a currency pair. Use a dot or comma as the decimal separator; "
+            "do not use thousands separators. Percentage and fixed fees are deducted from the "
+            "source amount before conversion. Only the displayed result is rounded.\n\n"
+            "RATE SOURCES\n"
+            "Online: the most recently retrieved daily ECB reference rates from Frankfurter. "
+            "Rate dates may be older on weekends and holidays. Cache: saved rates with their original date. "
+            "DEMO: undated sample values from the original project, for trying the app only. "
+            "Charts only contain retrieved or saved historical data.\n\n"
+            "CONTROLS\n"
+            "Enter: convert and save. Ctrl+R: refresh rates. Ctrl+S: swap currencies. "
+            "Hover over the chart to inspect individual points. Reload the chart after changing pairs.\n\n"
+            "PRIVACY\n"
+            "Amounts, fees and conversion history stay on this computer. The rate provider receives "
+            "only currency pairs, date ranges and standard connection information. No account or telemetry. "
+            "CSV files are written only to the location you choose.\n\n"
+            "LOCAL DATA\n" + str(self.store.folder) + "\n\n"
+            "QuantumFX 2.2.1\n"
+            "F11: toggle fullscreen. Escape: leave fullscreen and pause Snake. "
+            "Turn animations off using the sidebar.\n"
+            "Ctrl+F opens currency search. Hover over buttons or focus them with the keyboard for hints.\n"
+            "Original project: oneiric-hammer/QuantumFX-Currency-Intelligence-Platform. "
+            "The original license is included with this distribution."
         )
         box = tk.Text(self.help_tab, bg=CARD, fg=TEXT, relief="flat", wrap="word", padx=22, pady=18)
         box.pack(fill="both", expand=True)
@@ -398,30 +398,30 @@ class App:
         box.configure(state="disabled")
 
     def build_compare(self):
-        self.label(self.compare_tab, "Was bleibt nach den Gebühren?", 20)
-        self.label(self.compare_tab, "Vergleiche drei eigene Angebote mit dem Betrag und Währungspaar aus dem Rechner.", muted=True)
-        self.label(self.compare_tab, "Annahme: gleicher Referenzkurs. Prozent und Fixbetrag werden in der Ausgangswährung abgezogen.", muted=True)
+        self.label(self.compare_tab, "What is left after fees?", 20)
+        self.label(self.compare_tab, "Compare three offers using the amount and currency pair from the converter.", muted=True)
+        self.label(self.compare_tab, "Assumes the same reference rate. Percentage and fixed fees are deducted in the source currency.", muted=True)
         grid = ttk.Frame(self.compare_tab)
         grid.pack(fill="x", pady=12)
-        for col, title in enumerate(("Angebot", "Gebühr in %", "Fixgebühr (Basis)")):
+        for col, title in enumerate(("Offer", "Fee %", "Fixed fee (source)")):
             ttk.Label(grid, text=title, style="Muted.TLabel").grid(row=0, column=col, sticky="w", padx=(0, 24), pady=8)
         self.offers = []
         for i in range(3):
-            variables = [tk.StringVar(value=f"Angebot {i+1}"), tk.StringVar(value="0"), tk.StringVar(value="0")]
+            variables = [tk.StringVar(value=f"Offer {i+1}"), tk.StringVar(value="0"), tk.StringVar(value="0")]
             for col, var in enumerate(variables):
                 ttk.Entry(grid, textvariable=var, width=18 if col == 0 else 10).grid(row=i+1, column=col, padx=(0, 16), pady=6, sticky="ew")
                 var.trace_add("write", lambda *args: self.invalidate_comparison())
             self.offers.append(variables)
-        self.button(self.compare_tab, "Angebote vergleichen", self.compare, True).pack(anchor="w", pady=10)
-        self.compare_status = tk.StringVar(value="Eigene Gebühren eintragen und vergleichen.")
+        self.button(self.compare_tab, "Compare offers", self.compare, True).pack(anchor="w", pady=10)
+        self.compare_status = tk.StringVar(value="Enter your own fees and compare offers.")
         ttk.Label(self.compare_tab, textvariable=self.compare_status, foreground=ACCENT, wraplength=1000).pack(fill="x")
-        self.compare_tree = self.table(self.compare_tab, [("name", "Angebot", 220), ("fee", "Gebühren (Basis)", 180),
-            ("net", "Auszahlung (Ziel)", 220), ("difference", "Abstand zum besten Angebot", 240)])
+        self.compare_tree = self.table(self.compare_tab, [("name", "Offer", 220), ("fee", "Fees (source)", 180),
+            ("net", "Payout (target)", 220), ("difference", "Difference from best offer", 240)])
 
     def invalidate_comparison(self):
         if hasattr(self, "compare_tree"):
             self.compare_tree.delete(*self.compare_tree.get_children())
-            self.compare_status.set("Eingaben oder Kurse geändert · Vergleich erneut berechnen.")
+            self.compare_status.set("Inputs or rates changed · compare offers again.")
 
     def compare(self):
         self.invalidate_comparison()
@@ -430,7 +430,7 @@ class App:
             base, target = self.base.get(), self.target.get()
             results = []
             for i, (name, percent, fixed) in enumerate(self.offers):
-                label = name.get().strip()[:60] or f"Angebot {i+1}"
+                label = name.get().strip()[:60] or f"Offer {i+1}"
                 result = convert(amount, base, target, self.snapshot.rates, number(percent.get()), number(fixed.get()))
                 results.append((label, result))
             results.sort(key=lambda item: item[1]["net"], reverse=True)
@@ -438,8 +438,8 @@ class App:
             for label, result in results:
                 self.compare_tree.insert("", "end", values=(label, money(result["fee"], base) + " " + base,
                     money(result["net"], target) + " " + target, money(best-result["net"], target) + " " + target))
-            self.compare_status.set(f"{money(amount, base)} {base} → {target} · Kursdatum {self.snapshot.day or 'DEMO'} · "
-                                    "Sortiert nach Auszahlung. Individuelle Wechselkursaufschläge sind nicht enthalten.")
+            self.compare_status.set(f"{money(amount, base)} {base} → {target} · Rate date {self.snapshot.day or 'DEMO'} · "
+                                    "Sorted by payout. Individual exchange-rate markups are not included.")
         except ValueError as exc:
             self.compare_status.set(str(exc))
 
@@ -478,7 +478,7 @@ class App:
         if "rates" in self.pending:
             return
         self.refresh_btn.configure(state="disabled")
-        self.status.set("Kurse werden im Hintergrund geladen …")
+        self.status.set("Loading rates in the background …")
         self.submit("rates", self.service.latest, self.apply_snapshot)
 
     def apply_snapshot(self, snapshot):
@@ -490,10 +490,10 @@ class App:
             if var.get() not in codes:
                 var.set("EUR" if "EUR" in codes else codes[0])
         if snapshot.source == "demo":
-            self.status.set("DEMO · Beispielkurse ohne Kursdatum · Nicht für tatsächliche Umrechnungen verwenden")
+            self.status.set("DEMO · Undated sample rates · Do not use for actual conversions")
         else:
-            source = "Online abgerufen" if snapshot.source == "online" else "Offline / gespeicherte Kurse"
-            self.status.set(f"{source} · Kursdatum {snapshot.day} · {len(codes)} Währungen · Frankfurter / EZB")
+            source = "Retrieved online" if snapshot.source == "online" else "Offline / saved rates"
+            self.status.set(f"{source} · Rate date {snapshot.day} · {len(codes)} currencies · Frankfurter / ECB")
         self.feedback.set(snapshot.warning)
         self.calculate(save=False)
         self.fill_markets()
@@ -510,7 +510,7 @@ class App:
                 number(self.amount.get())
             except ValueError:
                 self.amount_entry.configure(style="Invalid.TEntry")
-            self.result.set("Eingabe prüfen")
+            self.result.set("Check your input")
             self.detail.set("")
             self.feedback.set(str(exc))
             return
@@ -519,18 +519,18 @@ class App:
         self.amount_entry.configure(style="TEntry")
         self.result.set(f"{money(result['net'], target)} {target}")
         self.detail.set(f"1 {base} = {result['rate']:.6f} {target}\n"
-                        f"Gebühren: {money(result['fee'], base)} {base}\n"
-                        f"Ohne Gebühren: {money(result['gross'], target)} {target}")
+                        f"Fees: {money(result['fee'], base)} {base}\n"
+                        f"Before fees: {money(result['gross'], target)} {target}")
         if save:
             self.animator.run("result", lambda t: self.result_card.pulse(1-t), 650)
             try:
                 self.store.add({"time": datetime.now().isoformat(timespec="seconds"), "amount": str(amount),
                     "base": base, "target": target, "net": str(result["net"]), "rate": str(result["rate"]),
                     "fee": str(result["fee"]), "date": self.snapshot.day or "DEMO", "source": self.snapshot.source})
-                self.feedback.set("Umrechnung lokal gespeichert." + (" DEMO-Kurse verwendet." if self.snapshot.source == "demo" else ""))
+                self.feedback.set("Conversion saved locally." + (" DEMO rates used." if self.snapshot.source == "demo" else ""))
                 self.fill_history()
             except OSError:
-                self.feedback.set("Berechnet; Verlauf konnte nicht gespeichert werden.")
+                self.feedback.set("Converted, but history could not be saved.")
 
     def invalidate_result(self):
         self.update_fee_hint()
@@ -538,7 +538,7 @@ class App:
         self.last_result = None
         self.copy_btn.configure(state="disabled")
         self.amount_entry.configure(style="TEntry")
-        self.result.set("Neu berechnen")
+        self.result.set("Recalculate")
         self.detail.set("")
         self.feedback.set("")
 
@@ -551,7 +551,7 @@ class App:
         self.invalidate_comparison()
         self.chart_points = []
         self.chart_key = None
-        self.chart_status.set("Paar geändert · Verlauf erneut laden.")
+        self.chart_status.set("Pair changed · reload the chart.")
         self.draw_chart()
         self.calculate(save=False)
         self.fill_markets()
@@ -566,7 +566,7 @@ class App:
         if self.last_result:
             self.root.clipboard_clear()
             self.root.clipboard_append(self.result.get())
-            self.feedback.set("Ergebnis kopiert.")
+            self.feedback.set("Result copied.")
 
     def fill_favorites(self):
         self.favorites.delete(0, "end")
@@ -582,7 +582,7 @@ class App:
         try:
             self.store.save()
         except OSError:
-            self.feedback.set("Favoriten konnten nicht gespeichert werden.")
+            self.feedback.set("Could not save favorites.")
 
     def favorite(self):
         pair = self.base.get() + "/" + self.target.get()
@@ -600,7 +600,7 @@ class App:
             return
         base, target = self.favorites.get(self.favorites.curselection()[0]).split("/")
         if base not in self.snapshot.rates or target not in self.snapshot.rates:
-            self.feedback.set("Dieses Paar ist im aktuellen Kursstand nicht verfügbar.")
+            self.feedback.set("This pair is not available in the current rate snapshot.")
             return
         self.base.set(base)
         self.target.set(target)
@@ -630,36 +630,36 @@ class App:
                 row["base"] + "/" + row["target"], row["net"], row["fee"], row["date"], row["source"]))
 
     def save_csv(self, rows, fields, name):
-        path = filedialog.asksaveasfilename(parent=self.root, title="CSV exportieren", defaultextension=".csv",
+        path = filedialog.asksaveasfilename(parent=self.root, title="Export CSV", defaultextension=".csv",
                                           initialfile=name, filetypes=[("CSV", "*.csv")])
         if path:
             try:
                 export_csv(path, rows, fields)
-                messagebox.showinfo("Export", "CSV-Datei gespeichert.", parent=self.root)
+                messagebox.showinfo("Export", "CSV file saved.", parent=self.root)
             except OSError as exc:
-                messagebox.showerror("Export fehlgeschlagen", str(exc), parent=self.root)
+                messagebox.showerror("Export failed", str(exc), parent=self.root)
 
     def export_rates(self):
-        self.save_csv(self.market_rows(), ["code", "rate", "base", "date", "source"], "QuantumFX-Kurse.csv")
+        self.save_csv(self.market_rows(), ["code", "rate", "base", "date", "source"], "QuantumFX-Rates.csv")
 
     def export_history(self):
-        self.save_csv(self.store.rows, ["time", "amount", "base", "target", "net", "rate", "fee", "date", "source"], "QuantumFX-Verlauf.csv")
+        self.save_csv(self.store.rows, ["time", "amount", "base", "target", "net", "rate", "fee", "date", "source"], "QuantumFX-History.csv")
 
     def export_chart(self):
         if not self.chart_points or not self.chart_key:
-            self.chart_status.set("Zuerst einen Kursverlauf laden.")
+            self.chart_status.set("Load a rate history first.")
             return
         base, target, _ = self.chart_key
         self.save_csv([{"date": day, "base": base, "target": target, "rate": str(rate)} for day, rate in self.chart_points],
                       ["date", "base", "target", "rate"], f"QuantumFX-{base}-{target}.csv")
 
     def clear_history(self):
-        if messagebox.askyesno("Verlauf löschen", "Alle gespeicherten Umrechnungen unwiderruflich löschen?", parent=self.root):
+        if messagebox.askyesno("Clear history", "Permanently delete all saved conversions?", parent=self.root):
             try:
                 self.store.clear()
                 self.fill_history()
             except OSError as exc:
-                messagebox.showerror("Löschen fehlgeschlagen", str(exc), parent=self.root)
+                messagebox.showerror("Deletion failed", str(exc), parent=self.root)
 
     def load_chart(self):
         if "chart" in self.pending:
@@ -668,17 +668,17 @@ class App:
         self.chart_key = key
         self.chart_points = []
         self.draw_chart()
-        self.chart_status.set("Historische Referenzkurse werden geladen …")
+        self.chart_status.set("Loading historical reference rates …")
         self.chart_btn.configure(state="disabled")
         def done(result):
             if self.chart_key != key or key != (self.base.get(), self.target.get(), int(self.days.get())):
-                self.chart_status.set("Auswahl geändert · Verlauf erneut laden.")
+                self.chart_status.set("Selection changed · reload the chart.")
                 return
             self.chart_points, source = result
             first, last = self.chart_points[0][1], self.chart_points[-1][1]
             change = (last / first - 1) * 100
-            self.chart_status.set(f"{key[0]}/{key[1]} · {change:+.2f} % im verfügbaren Zeitraum · "
-                                  f"{len(self.chart_points)} Datenpunkte · {'Cache' if source == 'cache' else 'Referenzkurse'}")
+            self.chart_status.set(f"{key[0]}/{key[1]} · {change:+.2f} % over the available period · "
+                                  f"{len(self.chart_points)} data points · {'Cache' if source == 'cache' else 'Reference rates'}")
             self.animator.run("chart", lambda t: self.draw_chart(t), 700)
         self.submit("chart", lambda: self.service.history(*key), done)
 
@@ -687,7 +687,7 @@ class App:
         c.delete("all")
         w, h = c.winfo_width(), c.winfo_height()
         if not self.chart_points:
-            c.create_text(w / 2, h / 2, text="Kursverlauf laden, um die Entwicklung zu sehen", fill=MUTED, width=max(180, w - 60))
+            c.create_text(w / 2, h / 2, text="Load rate history to see the trend", fill=MUTED, width=max(180, w - 60))
             return
         values = [float(p[1]) for p in self.chart_points]
         low, high = min(values), max(values)
@@ -726,7 +726,7 @@ class App:
 
     def callback_error(self, kind, value, tb):
         logging.error("UI error", exc_info=(kind, value, tb))
-        messagebox.showerror("QuantumFX", "Diese Aktion ist fehlgeschlagen. Details stehen in der lokalen Protokolldatei.", parent=self.root)
+        messagebox.showerror("QuantumFX", "This action failed. See the local log file for details.", parent=self.root)
 
     def close(self):
         self.animator.stop()

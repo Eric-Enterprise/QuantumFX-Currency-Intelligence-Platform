@@ -124,12 +124,12 @@ def icon(canvas, name, x, y, color=TEXT, size=18):
 
 
 def infer_icon(text):
-    for word, name in [("kopier", "copy"), ("aktual", "refresh"), ("Vollbild", "expand"),
-                       ("Fenster", "expand"), ("Schließen", "close"), ("CSV", "download"),
-                       ("export", "download"), ("entfernen", "trash"), ("löschen", "trash"),
-                       ("merken", "star"), ("umrechnen", "swap"), ("Umrechnen", "swap"),
-                       ("vergleichen", "compare"), ("laden", "refresh"), ("Animation", "sparkles"),
-                       ("Neues Spiel", "play"), ("Pause", "pause"), ("⇄", "swap")]:
+    for word, name in [("copy", "copy"), ("refresh", "refresh"), ("Fullscreen", "expand"),
+                       ("Window", "expand"), ("Close", "close"), ("CSV", "download"),
+                       ("export", "download"), ("remove", "trash"), ("clear", "trash"),
+                       ("save pair", "star"), ("convert", "swap"), ("Convert", "swap"),
+                       ("compare", "compare"), ("load", "refresh"), ("Animation", "sparkles"),
+                       ("New game", "play"), ("Pause", "pause"), ("⇄", "swap")]:
         if word.casefold() in text.casefold():
             return name
     return None
@@ -274,8 +274,8 @@ class Hero(tk.Canvas):
                 self.create_oval(w-290+i*5, -90+i*5, w+70-i*5, 215-i*5,
                                  outline=blend("#5c6095", "#23354e", i/12), width=2)
             icon(self, "sparkles", w-130, 29, "#c2b9ff", 46)
-        self.create_text(25, 30, anchor="w", text="Dein Geld. In jeder Währung.", fill=TEXT, font=("Segoe UI", 23, "bold"))
-        self.create_text(25, 66, anchor="w", text="Betrag eingeben. Währungen wählen. Klarheit gewinnen.", fill="#d3dcee", font=("Segoe UI", 10))
+        self.create_text(25, 30, anchor="w", text="Your money. In any currency.", fill=TEXT, font=("Segoe UI", 23, "bold"))
+        self.create_text(25, 66, anchor="w", text="Enter an amount. Choose currencies. Get clarity.", fill="#d3dcee", font=("Segoe UI", 10))
 
 
 class GlassResult(tk.Canvas):
@@ -293,7 +293,7 @@ class GlassResult(tk.Canvas):
         w, h = max(100, self.winfo_width()), self.winfo_height()
         glass(self, 1, 1, w-2, h-7, radius=24, top="#294959", bottom="#1b293f", glow=self.glow)
         icon(self, "check", 24, 23, MINT, 19)
-        self.create_text(52, 33, anchor="w", text="Dein Ergebnis · nach Gebühren", fill="#c4dfdc", font=("Segoe UI", 10))
+        self.create_text(52, 33, anchor="w", text="Your result · after fees", fill="#c4dfdc", font=("Segoe UI", 10))
         value = self.result.get()
         face = self.face
         face.configure(size=30)

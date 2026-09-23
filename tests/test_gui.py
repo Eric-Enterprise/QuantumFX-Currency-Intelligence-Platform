@@ -63,7 +63,7 @@ def test_comparison_sort_and_invalidation(app):
     app.offers[2][1].set("2")
     app.compare()
     first = app.compare_tree.get_children()[0]
-    assert app.compare_tree.item(first, "values")[0] == "Angebot 2"
+    assert app.compare_tree.item(first, "values")[0] == "Offer 2"
     app.amount.set("50")
     assert app.compare_tree.get_children() == ()
 
@@ -209,7 +209,7 @@ def test_collapsed_fees_keep_values_and_show_active_state(app):
     app.toggle_fees()
     app.percent.set("2")
     app.toggle_fees()
-    assert not app.fees_expanded and "aktiv" in app.fee_toggle.text
+    assert not app.fees_expanded and "active" in app.fee_toggle.text
     app.amount.set("100")
     app.calculate(save=False)
     assert app.last_result[0]["fee"] == 2
