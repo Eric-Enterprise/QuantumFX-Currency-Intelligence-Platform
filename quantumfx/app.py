@@ -25,7 +25,7 @@ class App:
         self.chart_points = []
         self.chart_key = None
         self.last_result = None
-        self.root.title("QuantumFX · Liquid Glass 2.2")
+        self.root.title("QuantumFX · Currency Intelligence")
         self.root.geometry("1180x820")
         self.root.minsize(980, 700)
         self.root.configure(bg=BG)
@@ -115,12 +115,9 @@ class App:
         sidebar.pack(side="left", fill="y")
         sidebar.pack_propagate(False)
         tk.Label(sidebar, text="QuantumFX", bg=SIDEBAR, fg=TEXT, font=("Segoe UI", 16, "bold")).pack(anchor="w")
-        tk.Label(sidebar, text="LIQUID GLASS  /  2.2", bg=SIDEBAR, fg=ACCENT, font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 28))
+        tk.Label(sidebar, text="VERSION 2.2", bg=SIDEBAR, fg=ACCENT, font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 28))
         self.nav = tk.Frame(sidebar, bg=SIDEBAR)
         self.nav.pack(fill="x")
-        self.credit = tk.Label(sidebar, text="Weiterentwickelt\nvon Eric", bg=SIDEBAR, fg=TEXT,
-                               font=("Segoe UI", 11, "bold"), justify="left")
-        self.credit.pack(side="bottom", anchor="w", pady=14)
         self.motion_btn = MotionButton(sidebar, "Effekte an" if self.animator.enabled else "Effekte aus",
                                        self.toggle_motion, self.animator, background=SIDEBAR, icon_name="sparkles",
                                        hint="Animationen ein- oder ausschalten. Die Einstellung bleibt gespeichert.")
@@ -388,7 +385,7 @@ class App:
             "nur Währungspaar, Zeitraum und die üblichen Verbindungsdaten. Keine Anmeldung, keine Telemetrie. "
             "CSV-Dateien werden ausschließlich am gewählten Speicherort angelegt.\n\n"
             "LOKALE DATEN\n" + str(self.store.folder) + "\n\n"
-            "QuantumFX 2.2 · Weiterentwickelt von Eric.\n"
+            "QuantumFX 2.2\n"
             "F11: Vollbild wechseln. Escape: Vollbild verlassen und Snake pausieren. "
             "Animationen lassen sich in der Seitenleiste abschalten.\n"
             "Strg+F öffnet die Währungssuche. Hinweise erscheinen bei Mauszeiger oder Tastaturfokus auf Schaltflächen.\n"

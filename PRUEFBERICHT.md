@@ -1,6 +1,6 @@
 # QuantumFX 2.2 · Prüfbericht
 
-Prüfdatum: 22. September 2026.
+Prüfdatum: 23. September 2026.
 
 ## Erfolgreich geprüft
 
@@ -19,7 +19,7 @@ Prüfdatum: 22. September 2026.
   veraltete Diagrammantworten, konstante Diagramme, Hintergrund-Queue, DEMO-Hinweis,
   Ergebnisinvalidierung und Scrollbarkeit bei 980 × 700.
 - Vollbild und Escape, automatische Snake-Pause beim Bereichswechsel,
-  Highscore-Speicherung, abschaltbare Animationen und Eric-Hinweis.
+  Highscore-Speicherung, abschaltbare Animationen.
 - Snake: Wachstum, Punkte, Wand-/Selbstkollisionen, belegte Felder,
   Umkehrverbot, doppelte Richtungswechsel und vollständig belegtes Spielfeld.
 - Echter HTTPS-Abruf: 30 Währungen, Kursdatum 21. September 2026.

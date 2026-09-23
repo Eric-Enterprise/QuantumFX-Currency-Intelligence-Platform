@@ -4,7 +4,7 @@ Deutschsprachiger Währungsrechner mit Tagesreferenzkursen, Kursdiagrammen,
 Gebührenvergleich und lokalem Verlauf. Weiterentwicklung von
 https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform
 
-## Neu in 2.2 · Liquid Glass
+## Neu in 2.2
 
 Geschichtete Glasoptik mit Farbverläufen, Lichtkanten und animierten Schaltflächen.
 Die Glasflächen werden in der Anwendung gezeichnet und bleiben gut lesbar.
@@ -16,7 +16,7 @@ als aktiv gekennzeichnet. Ungültige Beträge werden am Feld markiert. Kopieren 
 erst mit einem gültigen aktuellen Ergebnis möglich. Strg+F öffnet die Währungssuche.
 Tabellen haben abwechselnde Zeilenfarben und horizontale Scrollleisten.
 
-## Funktionen seit 2.1 · Weiterentwickelt von Eric
+## Funktionen seit 2.1
 
 Die neue Oberfläche startet im Vollbild mit Seitenleiste, violetten und mintfarbenen
 Akzenten, animierten Schaltflächen, Diagrammaufbau und Ergebnisrückmeldung.
@@ -30,21 +30,15 @@ eine Runde, Pfeiltasten oder WASD steuern die Schlange, Leertaste pausiert und
 Enter beginnt neu. Zuerst das Spielfeld anklicken, falls die Tastatur einen anderen
 Bereich fokussiert. Drei Geschwindigkeiten stehen bereit. Der Highscore wird lokal
 gespeichert. Beim Bereichswechsel und bei Escape pausiert die Runde automatisch.
-Der Hinweis „Weiterentwickelt von Eric“ steht dauerhaft in der Seitenleiste und
-zusätzlich im Hilfebereich; die Herkunft des Originalprojekts bleibt genannt.
+Die Herkunft des Originalprojekts bleibt im Hilfebereich genannt.
 
 ## Direkt starten
 
-<<<<<<< HEAD
-**Redefining the future of monetary value translation, one transaction at a time.**
-
-=======
 QuantumFX.exe per Doppelklick starten. Windows 10/11, 64 Bit (x64).
 Die portable EXE enthält Python und Tk. Kein Installer, keine separate
 Python-Installation und keine Administratorrechte für den normalen Betrieb nötig.
 Beim ersten Start kann das Entpacken der enthaltenen Laufzeit einige Sekunden dauern.
 Die Datei ist nicht digital signiert. Andere PCs wurden nicht separat geprüft.
->>>>>>> c9cff6a (feat: ship QuantumFX desktop platform)
 
 ## Funktionen
 

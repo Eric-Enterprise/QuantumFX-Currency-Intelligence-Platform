@@ -1,6 +1,8 @@
 # Änderungen in 2.2.0
 
-- Liquid-Glass-Optik mit geschichteten Farbverläufen, Lichtkanten und Rundungen.
+- Oberfläche ohne Design-Slogan und persönlichen Weiterentwicklungshinweis.
+
+- Glasoptik mit geschichteten Farbverläufen, Lichtkanten und Rundungen.
 - Gezeichnete Linien-Icons mit Text, Fokusrahmen und Hinweisen per Maus/Tastatur.
 - Vereinfachte Navigation und klare Schrittfolge mit Von-/Nach-Beschriftungen.
 - Aufklappbare Gebührenfelder mit Hinweis auf weiterhin aktive Gebühren.

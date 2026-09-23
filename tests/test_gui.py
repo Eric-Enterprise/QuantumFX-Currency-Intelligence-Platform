@@ -162,10 +162,9 @@ def test_snake_highscore_persists(app):
     assert Store(app.store.folder).prefs["snake_highscore"] == 10
 
 
-def test_reduced_motion_and_credit(app):
+def test_reduced_motion(app):
     app.toggle_motion()
     assert not app.animator.enabled
-    assert "Eric" in app.credit.cget("text")
     results = []
     app.animator.run("test", results.append)
     assert results == [1.0]
