@@ -57,7 +57,13 @@ def main():
                 for frame in (app.markets, app.compare_tab, app.history_tab, app.help_tab, app.converter):
                     app.tabs.select(frame)
                     root.update_idletasks()
-                atomic_json(args.smoke_test, {"ok": True, "result": app.result.get(), "rows": len(app.store.rows)})
+                for language in ("de", "ko", "sv", "en"):
+                    app.change_language(language)
+                    root.update_idletasks()
+                    assert app.tr.language == language
+                    assert app.last_result and len(app.store.rows) == 1
+                atomic_json(args.smoke_test, {"ok": True, "result": app.result.get(), "rows": len(app.store.rows),
+                                             "languages": ["en", "de", "ko", "sv"]})
             except Exception as exc:
                 atomic_json(args.smoke_test, {"ok": False, "error": str(exc)})
             finally:

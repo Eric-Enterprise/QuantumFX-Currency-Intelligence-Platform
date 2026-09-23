@@ -1,6 +1,6 @@
 # Security and privacy
 
-The current desktop release is version 2.2.1. There is no guaranteed support period or automatic updater.
+The current desktop release is version 2.3.0. There is no guaranteed support period or automatic updater.
 
 The application makes read-only HTTPS requests to api.frankfurter.dev. Certificates are verified using Python's standard TLS configuration. Conversion amounts, fees, and history are not sent through rate requests.
 

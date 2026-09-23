@@ -10,6 +10,8 @@ from tkinter import ttk, filedialog, messagebox
 from .core import RateService, Store, convert, number, money, export_csv
 from .ui import BG, CARD, TEXT, MUTED, ACCENT, MINT, SIDEBAR, Animator, MotionButton, Hero, GlassResult, Tooltip, blend
 from .snake import SnakePanel
+from .i18n import Translator, LANGUAGES
+from . import __version__
 
 
 class App:
@@ -17,6 +19,7 @@ class App:
         self.root = root
         self.service = RateService(folder)
         self.store = Store(folder)
+        self.tr = Translator(self.store.prefs.get("language", "en"))
         self.animator = Animator(root, self.store.prefs.get("animations", True) is not False)
         self.fullscreen = False
         self.snapshot = self.service.cached()
@@ -44,10 +47,10 @@ class App:
         self.days = tk.StringVar(value="90")
         self.search = tk.StringVar()
         self.status = tk.StringVar()
-        self.result = tk.StringVar(value="Ready to convert")
+        self.result = tk.StringVar(value=self.tr("Ready to convert"))
         self.detail = tk.StringVar()
         self.feedback = tk.StringVar()
-        self.chart_status = tk.StringVar(value="Choose a currency pair and load its rate history.")
+        self.chart_status = tk.StringVar(value=self.tr("Choose a currency pair and load its rate history."))
         self.build()
         for variable in (self.amount, self.percent, self.fixed):
             variable.trace_add("write", lambda *args: self.invalidate_result())
@@ -64,7 +67,8 @@ class App:
             self.root.after(150, self.refresh)
 
     def style(self):
-        self.root.option_add("*Font", "{Segoe UI} 10")
+        self.font_family = "Malgun Gothic" if self.tr.language == "ko" else "Segoe UI"
+        self.root.option_add("*Font", (self.font_family, 10))
         self.root.option_add("*TCombobox*Listbox.background", CARD)
         self.root.option_add("*TCombobox*Listbox.foreground", TEXT)
         style = ttk.Style()
@@ -76,7 +80,7 @@ class App:
         style.configure("TButton", background=CARD, foreground=TEXT, padding=(14, 9), borderwidth=0)
         style.map("TButton", background=[("active", "#28415d"), ("disabled", "#192538")],
                   foreground=[("disabled", "#66778e")])
-        style.configure("Accent.TButton", background=ACCENT, foreground=BG, font=("Segoe UI", 10, "bold"))
+        style.configure("Accent.TButton", background=ACCENT, foreground=BG, font=(self.font_family, 10, "bold"))
         style.map("Accent.TButton", background=[("active", "#81efd4")])
         style.configure("TEntry", fieldbackground=CARD, foreground=TEXT, insertcolor=TEXT, padding=12,
                         bordercolor="#4b5b80", lightcolor=CARD, darkcolor=CARD)
@@ -97,46 +101,54 @@ class App:
                         arrowcolor=MUTED, lightcolor=BG, darkcolor=BG)
 
     def label(self, parent, text, size=10, muted=False):
-        w = ttk.Label(parent, text=text, font=("Segoe UI", size, "bold" if size >= 18 else "normal"),
+        w = ttk.Label(parent, text=text, font=(self.font_family, size, "bold" if size >= 18 else "normal"),
                       style="Muted.TLabel" if muted else "TLabel")
         w.pack(anchor="w", pady=(0, 8))
         parent.bind("<Configure>", lambda e: w.configure(wraplength=max(200, e.width-16)), add=True)
         return w
 
     def button(self, parent, text, fn, accent=False):
-        hints = {"⇄": "Swap source and target currencies · Ctrl+S",
-                 "Convert & save  ↗": "Convert using the displayed rates and save the result to history · Enter",
-                 "Fullscreen  F11": "Toggle fullscreen · F11. Press Escape to return to a window.",
-                 "Refresh rates": "Refresh daily reference rates in the background · Ctrl+R"}
+        hints = {"⇄": self.tr("Swap source and target currencies · Ctrl+S"),
+                 self.tr("Convert & save  ↗"): self.tr("Convert using the displayed rates and save the result to history · Enter"),
+                 self.tr("Fullscreen  F11"): self.tr("Toggle fullscreen · F11. Press Escape to return to a window."),
+                 self.tr("Refresh"): self.tr("Refresh daily reference rates in the background · Ctrl+R")}
         return MotionButton(parent, text, fn, self.animator, accent, hint=hints.get(text))
 
     def build(self):
         sidebar = tk.Frame(self.root, bg=SIDEBAR, width=224, padx=16, pady=26)
         sidebar.pack(side="left", fill="y")
         sidebar.pack_propagate(False)
-        tk.Label(sidebar, text="QuantumFX", bg=SIDEBAR, fg=TEXT, font=("Segoe UI", 16, "bold")).pack(anchor="w")
-        tk.Label(sidebar, text="VERSION 2.2.1", bg=SIDEBAR, fg=ACCENT, font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 28))
+        tk.Label(sidebar, text="QuantumFX", bg=SIDEBAR, fg=TEXT, font=(self.font_family, 16, "bold")).pack(anchor="w")
+        tk.Label(sidebar, text=f"VERSION {__version__}", bg=SIDEBAR, fg=ACCENT, font=(self.font_family, 9)).pack(anchor="w", pady=(8, 28))
         self.nav = tk.Frame(sidebar, bg=SIDEBAR)
         self.nav.pack(fill="x")
-        self.motion_btn = MotionButton(sidebar, "Effects on" if self.animator.enabled else "Effects off",
+        self.motion_btn = MotionButton(sidebar, self.tr("Effects on") if self.animator.enabled else self.tr("Effects off"),
                                        self.toggle_motion, self.animator, background=SIDEBAR, icon_name="sparkles",
-                                       hint="Turn animations on or off. Your preference is saved.")
+                                       hint=self.tr("Turn animations on or off. Your preference is saved."))
         self.motion_btn.pack(side="bottom", fill="x", pady=8)
+        language_panel = ttk.Frame(sidebar)
+        language_panel.pack(side="bottom", fill="x", pady=(12, 8))
+        ttk.Label(language_panel, text=self.tr("Language")).pack(anchor="w", pady=(0, 6))
+        self.language_choice = tk.StringVar(value=LANGUAGES[self.tr.language])
+        self.language_box = ttk.Combobox(language_panel, textvariable=self.language_choice,
+                                         values=list(LANGUAGES.values()), state="readonly", width=16)
+        self.language_box.pack(fill="x")
+        self.language_box.bind("<<ComboboxSelected>>", self.language_selected)
         outer = ttk.Frame(self.root, padding=(24, 18))
         outer.pack(fill="both", expand=True)
         header = ttk.Frame(outer)
         header.pack(fill="x", pady=(0, 18))
-        self.page_title = ttk.Label(header, text="Overview", font=("Segoe UI", 23, "bold"))
+        self.page_title = ttk.Label(header, text=self.tr("Overview"), font=(self.font_family, 23, "bold"))
         self.page_title.pack(side="left")
-        self.button(header, "Close", self.close).pack(side="right", padx=(8, 0))
-        self.full_btn = self.button(header, "Fullscreen  F11", self.toggle_fullscreen)
+        self.button(header, self.tr("Close"), self.close).pack(side="right", padx=(8, 0))
+        self.full_btn = self.button(header, self.tr("Fullscreen  F11"), self.toggle_fullscreen)
         self.full_btn.pack(side="right", padx=8)
-        self.refresh_btn = self.button(header, "Refresh", self.refresh)
+        self.refresh_btn = self.button(header, self.tr("Refresh"), self.refresh)
         self.refresh_btn.pack(side="right")
         status_line = ttk.Label(outer, textvariable=self.status, foreground=ACCENT, wraplength=1080)
         status_line.pack(fill="x", pady=(0, 15))
         outer.bind("<Configure>", lambda e: status_line.configure(wraplength=max(250, e.width-50)))
-        ttk.Label(outer, text="Frankfurter / ECB · Daily reference rates · Fees are your own estimates.",
+        ttk.Label(outer, text=self.tr("Frankfurter / ECB · Daily reference rates · Fees are your own estimates."),
                   style="Muted.TLabel").pack(side="bottom", anchor="w", pady=(12, 0))
         self.tabs = ttk.Notebook(outer)
         self.tabs.pack(fill="both", expand=True)
@@ -147,9 +159,9 @@ class App:
         self.help_tab = ttk.Frame(self.tabs, padding=(0, 22))
         self.snake_tab = ttk.Frame(self.tabs, padding=(0, 16))
         self.nav_buttons = []
-        for frame, title, glyph in [(self.converter, "Converter", "swap"), (self.markets, "Currencies", "globe"),
-                             (self.compare_tab, "Fees", "compare"), (self.history_tab, "History", "history"),
-                             (self.snake_tab, "Snake", "game"), (self.help_tab, "Help", "help")]:
+        for frame, title, glyph in [(self.converter, self.tr("Converter"), "swap"), (self.markets, self.tr("Currencies"), "globe"),
+                             (self.compare_tab, self.tr("Fees"), "compare"), (self.history_tab, self.tr("History"), "history"),
+                             (self.snake_tab, self.tr("Snake"), "game"), (self.help_tab, self.tr("Help"), "help")]:
             self.tabs.add(frame, text=title)
             nav_btn = MotionButton(self.nav, title, lambda f=frame: self.tabs.select(f), self.animator,
                                    background=SIDEBAR, icon_name=glyph, align="left")
@@ -169,7 +181,7 @@ class App:
         self.root.bind("<MouseWheel>", self.scroll_converter, add=True)
         content.columnconfigure(0, weight=2)
         content.columnconfigure(1, weight=3)
-        hero = Hero(content)
+        hero = Hero(content, translator=self.tr)
         hero.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 24))
         left = ttk.Frame(content, padding=(0, 0, 28, 0))
         left.grid(row=1, column=0, sticky="nsew")
@@ -184,81 +196,141 @@ class App:
                 left.grid_configure(row=1, column=0, columnspan=1)
                 right.grid_configure(row=1, column=1, columnspan=1, pady=0)
         viewport.bind("<Configure>", responsive)
-        self.label(left, "Your currency converter", 20)
-        self.label(left, "1  Enter an amount", muted=True)
-        self.amount_entry = ttk.Entry(left, textvariable=self.amount, font=("Segoe UI", 19))
+        self.label(left, self.tr("Your currency converter"), 20)
+        self.label(left, self.tr("1  Enter an amount"), muted=True)
+        self.amount_entry = ttk.Entry(left, textvariable=self.amount, font=(self.font_family, 19))
         self.amount_entry.pack(fill="x", pady=(0, 6))
-        self.label(left, "For example 1234.56 · no thousands separators", muted=True)
-        Tooltip(self.amount_entry, "Use a dot or comma as the decimal separator, e.g. 1234.56. Enter converts and saves.")
-        self.label(left, "2  Choose currencies", muted=True)
+        self.label(left, self.tr("For example 1234.56 · no thousands separators"), muted=True)
+        Tooltip(self.amount_entry, self.tr("Use a dot or comma as the decimal separator, e.g. 1234.56. Enter converts and saves."))
+        self.label(left, self.tr("2  Choose currencies"), muted=True)
         pair = ttk.Frame(left)
         pair.pack(fill="x", pady=(0, 16))
         source = ttk.Frame(pair)
         source.pack(side="left", fill="x", expand=True)
-        self.label(source, "From", muted=True)
+        self.label(source, self.tr("From"), muted=True)
         self.base_box = ttk.Combobox(source, textvariable=self.base, width=8, state="readonly")
         self.base_box.pack(fill="x")
         self.button(pair, "⇄", self.swap).pack(side="left", padx=10, pady=(26, 0))
         target = ttk.Frame(pair)
         target.pack(side="left", fill="x", expand=True)
-        self.label(target, "To", muted=True)
+        self.label(target, self.tr("To"), muted=True)
         self.target_box = ttk.Combobox(target, textvariable=self.target, width=8, state="readonly")
         self.target_box.pack(fill="x")
         for box in (self.base_box, self.target_box):
             box.bind("<<ComboboxSelected>>", self.pair_changed)
         self.fees_expanded = False
-        self.fee_toggle = MotionButton(left, "Add fees · optional", self.toggle_fees,
-                                       self.animator, icon_name="compare", hint="Show optional percentage and fixed fees. Leave them at zero for no deductions.")
+        self.fee_toggle = MotionButton(left, self.tr("Add fees · optional"), self.toggle_fees,
+                                       self.animator, icon_name="compare", hint=self.tr("Show optional percentage and fixed fees. Leave them at zero for no deductions."))
         self.fee_toggle.pack(anchor="w", pady=(0, 10))
         fees = ttk.Frame(left)
         self.fees_container = fees
-        ttk.Label(fees, text="Percent %").pack(side="left")
+        ttk.Label(fees, text=self.tr("Percent %")).pack(side="left")
         percent_entry = ttk.Entry(fees, textvariable=self.percent, width=6)
         percent_entry.pack(side="left", padx=(8, 18))
-        ttk.Label(fees, text="Fixed fee").pack(side="left")
+        ttk.Label(fees, text=self.tr("Fixed fee")).pack(side="left")
         fixed_entry = ttk.Entry(fees, textvariable=self.fixed, width=8)
         fixed_entry.pack(side="left", padx=8)
-        Tooltip(percent_entry, "Percentage deducted from the source amount, from 0 to 100.")
-        Tooltip(fixed_entry, "Fixed deduction in the source currency. For example, 2 means EUR 2 when converting from EUR.")
-        self.convert_btn = self.button(left, "Convert & save  ↗", self.calculate, True)
+        Tooltip(percent_entry, self.tr("Percentage deducted from the source amount, from 0 to 100."))
+        Tooltip(fixed_entry, self.tr("Fixed deduction in the source currency. For example, 2 means EUR 2 when converting from EUR."))
+        self.convert_btn = self.button(left, self.tr("Convert & save  ↗"), self.calculate, True)
         self.convert_btn.pack(fill="x")
-        result_card = GlassResult(left, self.result, self.detail)
+        result_card = GlassResult(left, self.result, self.detail, translator=self.tr)
         self.result_card = result_card
         result_card.pack(fill="x", pady=18)
         actions = ttk.Frame(left)
         actions.pack(fill="x")
-        self.copy_btn = self.button(actions, "Copy", self.copy)
+        self.copy_btn = self.button(actions, self.tr("Copy"), self.copy)
         self.copy_btn.pack(side="left")
-        self.button(actions, "★ Save pair", self.favorite).pack(side="left", padx=8)
+        self.button(actions, self.tr("★ Save pair"), self.favorite).pack(side="left", padx=8)
         ttk.Label(left, textvariable=self.feedback, foreground="#ffcc80", wraplength=385).pack(fill="x", pady=12)
-        self.label(right, "Rate trends", 20)
+        self.label(right, self.tr("Rate trends"), 20)
         toolbar = ttk.Frame(right)
         toolbar.pack(fill="x", pady=(0, 12))
-        ttk.Label(toolbar, text="Period (days)", style="Muted.TLabel").pack(side="left")
+        ttk.Label(toolbar, text=self.tr("Period (days)"), style="Muted.TLabel").pack(side="left")
         period = ttk.Combobox(toolbar, textvariable=self.days, values=(30, 90, 365), width=5, state="readonly")
         period.pack(side="left", padx=12)
         period.bind("<<ComboboxSelected>>", self.pair_changed)
-        self.chart_btn = self.button(toolbar, "Load history", self.load_chart)
+        self.chart_btn = self.button(toolbar, self.tr("Load history"), self.load_chart)
         self.chart_btn.pack(side="right")
-        self.button(right, "Export chart CSV", self.export_chart).pack(anchor="e", pady=(0, 8))
+        self.button(right, self.tr("Export chart CSV"), self.export_chart).pack(anchor="e", pady=(0, 8))
         self.canvas = tk.Canvas(right, bg=CARD, highlightthickness=0, height=280)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Configure>", lambda e: self.draw_chart())
         self.canvas.bind("<Motion>", self.chart_hover)
         ttk.Label(right, textvariable=self.chart_status, wraplength=540, style="Muted.TLabel").pack(fill="x", pady=12)
-        self.label(right, "Favorites · double-click to open", muted=True)
+        self.label(right, self.tr("Favorites · double-click to open"), muted=True)
         self.favorites = tk.Listbox(right, bg=CARD, fg=TEXT, selectbackground="#28556a", height=3,
                                    relief="flat", highlightthickness=0, activestyle="none")
         self.favorites.pack(fill="x")
         self.favorites.bind("<Double-Button-1>", self.open_favorite)
-        self.button(right, "Remove selected pair", self.remove_favorite).pack(anchor="e", pady=8)
+        self.button(right, self.tr("Remove selected pair"), self.remove_favorite).pack(anchor="e", pady=8)
         self.fill_favorites()
         self.build_markets()
         self.build_history()
         self.build_compare()
         self.build_help()
-        self.snake = SnakePanel(self.snake_tab, self.store, self.animator)
+        self.snake = SnakePanel(self.snake_tab, self.store, self.animator, translator=self.tr)
         self.snake.pack(fill="both", expand=True)
+
+    def money(self, value, currency):
+        return self.tr.amount(money(value, currency))
+
+    def language_selected(self, event=None):
+        code = next((code for code, label in LANGUAGES.items() if label == self.language_choice.get()), "en")
+        self.change_language(code)
+
+    def change_language(self, code):
+        if code not in LANGUAGES or code == self.tr.language:
+            return
+        selected = self.tabs.index(self.tabs.select())
+        expanded = self.fees_expanded
+        offers = [[v.get() for v in row] for row in self.offers]
+        for i, row in enumerate(offers):
+            if row[0] == self.tr("Offer {n}", n=i+1):
+                row[0] = None
+        had_comparison = bool(self.compare_tree.get_children())
+        self.snake.pause()
+        game, started, highscore = self.snake.game, self.snake.started, self.snake.highscore
+        speed = next((k for k in ("Relaxed", "Normal", "Fast") if self.tr(k) == self.snake.speed.get()), "Normal")
+        self.animator.stop()
+        self.search.trace_remove("write", self.search_trace)
+        self.root.unbind("<MouseWheel>")
+        for child in self.root.winfo_children():
+            child.destroy()
+        self.tr = Translator(code)
+        self.store.prefs["language"] = code
+        self.style()
+        self.build()
+        self.apply_snapshot(self.snapshot)
+        self.fill_history()
+        for i, (variables, values) in enumerate(zip(self.offers, offers)):
+            for variable, value in zip(variables, values):
+                variable.set(self.tr("Offer {n}", n=i+1) if value is None else value)
+        if had_comparison:
+            self.compare()
+        if expanded:
+            self.toggle_fees()
+        self.snake.game, self.snake.started, self.snake.highscore = game, started, highscore
+        self.snake.speed.set(self.tr(speed))
+        self.snake.update_caption()
+        self.snake.draw()
+        self.tabs.select(selected)
+        self.full_btn.configure(text=self.tr("Window  Esc" if self.fullscreen else "Fullscreen  F11"))
+        if self.chart_points:
+            self.describe_chart()
+        else:
+            self.chart_status.set(self.tr("Choose a currency pair and load its rate history."))
+        self.draw_chart()
+        if "rates" in self.pending:
+            self.refresh_btn.configure(state="disabled")
+            self.status.set(self.tr("Loading rates in the background …"))
+        if "chart" in self.pending:
+            self.chart_btn.configure(state="disabled")
+            self.chart_status.set(self.tr("Loading historical reference rates …"))
+        try:
+            self.store.save()
+        except OSError:
+            self.feedback.set(self.tr("Language could not be saved."))
 
     def enter_action(self, event=None):
         if self.tabs.select() == str(self.converter):
@@ -283,13 +355,13 @@ class App:
             active = number(self.percent.get()) != 0 or number(self.fixed.get()) != 0
         except ValueError:
             active = True
-        self.fee_toggle.configure(text="Hide fees" if self.fees_expanded else
-                                   ("Fees active · edit" if active else "Add fees · optional"))
+        self.fee_toggle.configure(text=self.tr("Hide fees") if self.fees_expanded else
+                                   (self.tr("Fees active · edit") if active else self.tr("Add fees · optional")))
 
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen
         self.root.attributes("-fullscreen", self.fullscreen)
-        self.full_btn.configure(text="Window  Esc" if self.fullscreen else "Fullscreen  F11")
+        self.full_btn.configure(text=self.tr("Window  Esc") if self.fullscreen else self.tr("Fullscreen  F11"))
 
     def leave_fullscreen(self):
         if hasattr(self, "snake"):
@@ -300,12 +372,12 @@ class App:
     def toggle_motion(self):
         self.animator.enabled = not self.animator.enabled
         self.animator.stop()
-        self.motion_btn.configure(text="Effects on" if self.animator.enabled else "Effects off")
+        self.motion_btn.configure(text=self.tr("Effects on") if self.animator.enabled else self.tr("Effects off"))
         self.store.prefs["animations"] = self.animator.enabled
         try:
             self.store.save()
         except OSError:
-            self.feedback.set("Could not save display preferences.")
+            self.feedback.set(self.tr("Could not save display preferences."))
         self.draw_chart()
 
     def page_changed(self, event=None):
@@ -339,89 +411,65 @@ class App:
         return tree
 
     def build_markets(self):
-        self.label(self.markets, "All available currencies", 20)
-        self.label(self.markets, "Rates per 1 unit of the converter's source currency. Double-click to select a target currency.", muted=True)
+        self.label(self.markets, self.tr("All available currencies"), 20)
+        self.label(self.markets, self.tr("Rates per 1 unit of the converter's source currency. Double-click to select a target currency."), muted=True)
         bar = ttk.Frame(self.markets)
         bar.pack(fill="x")
-        ttk.Label(bar, text="Find currency").pack(side="left", padx=(0, 12))
+        ttk.Label(bar, text=self.tr("Find currency")).pack(side="left", padx=(0, 12))
         self.search_entry = ttk.Entry(bar, textvariable=self.search)
         self.search_entry.pack(side="left")
-        Tooltip(self.search_entry, "Search by currency code, e.g. EUR or USD · Ctrl+F")
-        self.button(bar, "Reset", lambda: self.search.set("")).pack(side="left", padx=8)
-        self.search.trace_add("write", lambda *args: self.fill_markets())
-        self.button(self.markets, "Export rates as CSV", self.export_rates).pack(anchor="e", pady=(10, 0))
-        self.market_tree = self.table(self.markets, [("code", "Currency", 120), ("rate", "Rate", 220),
-                                                     ("base", "Base", 120), ("date", "Rate date / source", 350)])
+        Tooltip(self.search_entry, self.tr("Search by currency code, e.g. EUR or USD · Ctrl+F"))
+        self.button(bar, self.tr("Reset"), lambda: self.search.set("")).pack(side="left", padx=8)
+        self.search_trace = self.search.trace_add("write", lambda *args: self.fill_markets())
+        self.button(self.markets, self.tr("Export rates as CSV"), self.export_rates).pack(anchor="e", pady=(10, 0))
+        self.market_tree = self.table(self.markets, [("code", self.tr("Currency"), 120), ("rate", self.tr("Rate"), 220),
+                                                     ("base", self.tr("Base"), 120), ("date", self.tr("Rate date / source"), 350)])
         self.market_tree.bind("<Double-Button-1>", self.open_market)
 
     def build_history(self):
-        self.label(self.history_tab, "Your recent conversions", 20)
+        self.label(self.history_tab, self.tr("Your recent conversions"), 20)
         bar = ttk.Frame(self.history_tab)
         bar.pack(fill="x")
-        self.button(bar, "Export CSV", self.export_history).pack(side="right")
-        self.button(bar, "Clear history", self.clear_history).pack(side="right", padx=8)
-        self.history_tree = self.table(self.history_tab, [("time", "Time", 150), ("amount", "Amount", 120),
-            ("pair", "Currency pair", 130), ("net", "Result", 150), ("fee", "Fee (source)", 120),
-            ("date", "Rate date", 110), ("source", "Source", 110)])
-        self.label(self.history_tab, "Up to 1,000 entries are stored locally. CSV decimal values are not rounded.", muted=True)
+        self.button(bar, self.tr("Export CSV"), self.export_history).pack(side="right")
+        self.button(bar, self.tr("Clear history"), self.clear_history).pack(side="right", padx=8)
+        self.history_tree = self.table(self.history_tab, [("time", self.tr("Time"), 150), ("amount", self.tr("Amount"), 120),
+            ("pair", self.tr("Currency pair"), 130), ("net", self.tr("Result"), 150), ("fee", self.tr("Fee (source)"), 120),
+            ("date", self.tr("Rate date"), 110), ("source", self.tr("Source"), 110)])
+        self.label(self.history_tab, self.tr("Up to 1,000 entries are stored locally. CSV decimal values are not rounded."), muted=True)
 
     def build_help(self):
-        self.label(self.help_tab, "Understanding your numbers and data", 22)
-        text = (
-            "HOW IT WORKS\n"
-            "Choose an amount and a currency pair. Use a dot or comma as the decimal separator; "
-            "do not use thousands separators. Percentage and fixed fees are deducted from the "
-            "source amount before conversion. Only the displayed result is rounded.\n\n"
-            "RATE SOURCES\n"
-            "Online: the most recently retrieved daily ECB reference rates from Frankfurter. "
-            "Rate dates may be older on weekends and holidays. Cache: saved rates with their original date. "
-            "DEMO: undated sample values from the original project, for trying the app only. "
-            "Charts only contain retrieved or saved historical data.\n\n"
-            "CONTROLS\n"
-            "Enter: convert and save. Ctrl+R: refresh rates. Ctrl+S: swap currencies. "
-            "Hover over the chart to inspect individual points. Reload the chart after changing pairs.\n\n"
-            "PRIVACY\n"
-            "Amounts, fees and conversion history stay on this computer. The rate provider receives "
-            "only currency pairs, date ranges and standard connection information. No account or telemetry. "
-            "CSV files are written only to the location you choose.\n\n"
-            "LOCAL DATA\n" + str(self.store.folder) + "\n\n"
-            "QuantumFX 2.2.1\n"
-            "F11: toggle fullscreen. Escape: leave fullscreen and pause Snake. "
-            "Turn animations off using the sidebar.\n"
-            "Ctrl+F opens currency search. Hover over buttons or focus them with the keyboard for hints.\n"
-            "Original project: oneiric-hammer/QuantumFX-Currency-Intelligence-Platform. "
-            "The original license is included with this distribution."
-        )
+        self.label(self.help_tab, self.tr("Understanding your numbers and data"), 22)
+        text = self.tr("help_body", folder=self.store.folder, version=__version__)
         box = tk.Text(self.help_tab, bg=CARD, fg=TEXT, relief="flat", wrap="word", padx=22, pady=18)
         box.pack(fill="both", expand=True)
         box.insert("1.0", text)
         box.configure(state="disabled")
 
     def build_compare(self):
-        self.label(self.compare_tab, "What is left after fees?", 20)
-        self.label(self.compare_tab, "Compare three offers using the amount and currency pair from the converter.", muted=True)
-        self.label(self.compare_tab, "Assumes the same reference rate. Percentage and fixed fees are deducted in the source currency.", muted=True)
+        self.label(self.compare_tab, self.tr("What is left after fees?"), 20)
+        self.label(self.compare_tab, self.tr("Compare three offers using the amount and currency pair from the converter."), muted=True)
+        self.label(self.compare_tab, self.tr("Assumes the same reference rate. Percentage and fixed fees are deducted in the source currency."), muted=True)
         grid = ttk.Frame(self.compare_tab)
         grid.pack(fill="x", pady=12)
-        for col, title in enumerate(("Offer", "Fee %", "Fixed fee (source)")):
+        for col, title in enumerate((self.tr("Offer"), self.tr("Fee %"), self.tr("Fixed fee (source)"))):
             ttk.Label(grid, text=title, style="Muted.TLabel").grid(row=0, column=col, sticky="w", padx=(0, 24), pady=8)
         self.offers = []
         for i in range(3):
-            variables = [tk.StringVar(value=f"Offer {i+1}"), tk.StringVar(value="0"), tk.StringVar(value="0")]
+            variables = [tk.StringVar(value=self.tr("Offer {n}", n=i+1)), tk.StringVar(value="0"), tk.StringVar(value="0")]
             for col, var in enumerate(variables):
                 ttk.Entry(grid, textvariable=var, width=18 if col == 0 else 10).grid(row=i+1, column=col, padx=(0, 16), pady=6, sticky="ew")
                 var.trace_add("write", lambda *args: self.invalidate_comparison())
             self.offers.append(variables)
-        self.button(self.compare_tab, "Compare offers", self.compare, True).pack(anchor="w", pady=10)
-        self.compare_status = tk.StringVar(value="Enter your own fees and compare offers.")
+        self.button(self.compare_tab, self.tr("Compare offers"), self.compare, True).pack(anchor="w", pady=10)
+        self.compare_status = tk.StringVar(value=self.tr("Enter your own fees and compare offers."))
         ttk.Label(self.compare_tab, textvariable=self.compare_status, foreground=ACCENT, wraplength=1000).pack(fill="x")
-        self.compare_tree = self.table(self.compare_tab, [("name", "Offer", 220), ("fee", "Fees (source)", 180),
-            ("net", "Payout (target)", 220), ("difference", "Difference from best offer", 240)])
+        self.compare_tree = self.table(self.compare_tab, [("name", self.tr("Offer"), 220), ("fee", self.tr("Fees (source)"), 180),
+            ("net", self.tr("Payout (target)"), 220), ("difference", self.tr("Difference from best offer"), 240)])
 
     def invalidate_comparison(self):
         if hasattr(self, "compare_tree"):
             self.compare_tree.delete(*self.compare_tree.get_children())
-            self.compare_status.set("Inputs or rates changed · compare offers again.")
+            self.compare_status.set(self.tr("Inputs or rates changed · compare offers again."))
 
     def compare(self):
         self.invalidate_comparison()
@@ -430,18 +478,17 @@ class App:
             base, target = self.base.get(), self.target.get()
             results = []
             for i, (name, percent, fixed) in enumerate(self.offers):
-                label = name.get().strip()[:60] or f"Offer {i+1}"
+                label = name.get().strip()[:60] or self.tr("Offer {n}", n=i+1)
                 result = convert(amount, base, target, self.snapshot.rates, number(percent.get()), number(fixed.get()))
                 results.append((label, result))
             results.sort(key=lambda item: item[1]["net"], reverse=True)
             best = results[0][1]["net"]
             for label, result in results:
-                self.compare_tree.insert("", "end", values=(label, money(result["fee"], base) + " " + base,
-                    money(result["net"], target) + " " + target, money(best-result["net"], target) + " " + target))
-            self.compare_status.set(f"{money(amount, base)} {base} → {target} · Rate date {self.snapshot.day or 'DEMO'} · "
-                                    "Sorted by payout. Individual exchange-rate markups are not included.")
+                self.compare_tree.insert("", "end", values=(label, self.money(result["fee"], base) + " " + base,
+                    self.money(result["net"], target) + " " + target, self.money(best-result["net"], target) + " " + target))
+            self.compare_status.set(self.tr("{amount} {base} → {target} · Rate date {date} · Sorted by payout. Individual exchange-rate markups are not included.", amount=self.money(amount, base), base=base, target=target, date=self.snapshot.day or "DEMO"))
         except ValueError as exc:
-            self.compare_status.set(str(exc))
+            self.compare_status.set(self.tr.error(exc))
 
     def submit(self, key, fn, done):
         if key in self.pending:
@@ -467,9 +514,9 @@ class App:
                 self.chart_btn.configure(state="normal")
             if error:
                 if key == "chart":
-                    self.chart_status.set(str(error))
+                    self.chart_status.set(self.tr.error(error))
                 else:
-                    self.feedback.set(str(error))
+                    self.feedback.set(self.tr.error(error))
             else:
                 done(result)
         self.poll_id = self.root.after(100, self.poll)
@@ -478,7 +525,7 @@ class App:
         if "rates" in self.pending:
             return
         self.refresh_btn.configure(state="disabled")
-        self.status.set("Loading rates in the background …")
+        self.status.set(self.tr("Loading rates in the background …"))
         self.submit("rates", self.service.latest, self.apply_snapshot)
 
     def apply_snapshot(self, snapshot):
@@ -490,11 +537,11 @@ class App:
             if var.get() not in codes:
                 var.set("EUR" if "EUR" in codes else codes[0])
         if snapshot.source == "demo":
-            self.status.set("DEMO · Undated sample rates · Do not use for actual conversions")
+            self.status.set(self.tr("DEMO · Undated sample rates · Do not use for actual conversions"))
         else:
-            source = "Retrieved online" if snapshot.source == "online" else "Offline / saved rates"
-            self.status.set(f"{source} · Rate date {snapshot.day} · {len(codes)} currencies · Frankfurter / ECB")
-        self.feedback.set(snapshot.warning)
+            source = self.tr("Retrieved online") if snapshot.source == "online" else self.tr("Offline / saved rates")
+            self.status.set(self.tr("{source} · Rate date {date} · {count} currencies · Frankfurter / ECB", source=source, date=snapshot.day, count=len(codes)))
+        self.feedback.set(self.tr.error(snapshot.warning))
         self.calculate(save=False)
         self.fill_markets()
 
@@ -510,27 +557,27 @@ class App:
                 number(self.amount.get())
             except ValueError:
                 self.amount_entry.configure(style="Invalid.TEntry")
-            self.result.set("Check your input")
+            self.result.set(self.tr("Check your input"))
             self.detail.set("")
-            self.feedback.set(str(exc))
+            self.feedback.set(self.tr.error(exc))
             return
         self.last_result = (result, target)
         self.copy_btn.configure(state="normal")
         self.amount_entry.configure(style="TEntry")
-        self.result.set(f"{money(result['net'], target)} {target}")
-        self.detail.set(f"1 {base} = {result['rate']:.6f} {target}\n"
-                        f"Fees: {money(result['fee'], base)} {base}\n"
-                        f"Before fees: {money(result['gross'], target)} {target}")
+        self.result.set(f"{self.money(result['net'], target)} {target}")
+        self.detail.set(self.tr("1 {base} = {rate} {target}\nFees: {fee} {base}\nBefore fees: {gross} {target}",
+                                base=base, target=target, rate=f"{result['rate']:.6f}",
+                                fee=self.money(result['fee'], base), gross=self.money(result['gross'], target)))
         if save:
             self.animator.run("result", lambda t: self.result_card.pulse(1-t), 650)
             try:
                 self.store.add({"time": datetime.now().isoformat(timespec="seconds"), "amount": str(amount),
                     "base": base, "target": target, "net": str(result["net"]), "rate": str(result["rate"]),
                     "fee": str(result["fee"]), "date": self.snapshot.day or "DEMO", "source": self.snapshot.source})
-                self.feedback.set("Conversion saved locally." + (" DEMO rates used." if self.snapshot.source == "demo" else ""))
+                self.feedback.set(self.tr("Conversion saved locally.") + (self.tr(" DEMO rates used.") if self.snapshot.source == "demo" else ""))
                 self.fill_history()
             except OSError:
-                self.feedback.set("Converted, but history could not be saved.")
+                self.feedback.set(self.tr("Converted, but history could not be saved."))
 
     def invalidate_result(self):
         self.update_fee_hint()
@@ -538,7 +585,7 @@ class App:
         self.last_result = None
         self.copy_btn.configure(state="disabled")
         self.amount_entry.configure(style="TEntry")
-        self.result.set("Recalculate")
+        self.result.set(self.tr("Recalculate"))
         self.detail.set("")
         self.feedback.set("")
 
@@ -551,7 +598,7 @@ class App:
         self.invalidate_comparison()
         self.chart_points = []
         self.chart_key = None
-        self.chart_status.set("Pair changed · reload the chart.")
+        self.chart_status.set(self.tr("Pair changed · reload the chart."))
         self.draw_chart()
         self.calculate(save=False)
         self.fill_markets()
@@ -566,7 +613,7 @@ class App:
         if self.last_result:
             self.root.clipboard_clear()
             self.root.clipboard_append(self.result.get())
-            self.feedback.set("Result copied.")
+            self.feedback.set(self.tr("Result copied."))
 
     def fill_favorites(self):
         self.favorites.delete(0, "end")
@@ -582,7 +629,7 @@ class App:
         try:
             self.store.save()
         except OSError:
-            self.feedback.set("Could not save favorites.")
+            self.feedback.set(self.tr("Could not save favorites."))
 
     def favorite(self):
         pair = self.base.get() + "/" + self.target.get()
@@ -600,7 +647,7 @@ class App:
             return
         base, target = self.favorites.get(self.favorites.curselection()[0]).split("/")
         if base not in self.snapshot.rates or target not in self.snapshot.rates:
-            self.feedback.set("This pair is not available in the current rate snapshot.")
+            self.feedback.set(self.tr("This pair is not available in the current rate snapshot."))
             return
         self.base.set(base)
         self.target.set(target)
@@ -615,7 +662,7 @@ class App:
     def fill_markets(self):
         self.market_tree.delete(*self.market_tree.get_children())
         for i, row in enumerate(self.market_rows()):
-            self.market_tree.insert("", "end", tags=("odd" if i%2 else "even",), values=(row["code"], f"{Decimal(row['rate']):.6f}", row["base"], row["date"] + " / " + row["source"]))
+            self.market_tree.insert("", "end", tags=("odd" if i%2 else "even",), values=(row["code"], f"{Decimal(row['rate']):.6f}", row["base"], row["date"] + " / " + self.source_label(row["source"])))
 
     def open_market(self, event=None):
         if self.market_tree.selection():
@@ -623,21 +670,24 @@ class App:
             self.pair_changed()
             self.tabs.select(self.converter)
 
+    def source_label(self, source):
+        return self.tr({"online": "Retrieved online", "cache": "Cache", "demo": "DEMO"}.get(source, source))
+
     def fill_history(self):
         self.history_tree.delete(*self.history_tree.get_children())
         for i, row in enumerate(self.store.rows):
             self.history_tree.insert("", "end", tags=("odd" if i%2 else "even",), values=(row["time"].replace("T", " "), row["amount"],
-                row["base"] + "/" + row["target"], row["net"], row["fee"], row["date"], row["source"]))
+                row["base"] + "/" + row["target"], row["net"], row["fee"], row["date"], self.source_label(row["source"])))
 
     def save_csv(self, rows, fields, name):
-        path = filedialog.asksaveasfilename(parent=self.root, title="Export CSV", defaultextension=".csv",
+        path = filedialog.asksaveasfilename(parent=self.root, title=self.tr("Export CSV"), defaultextension=".csv",
                                           initialfile=name, filetypes=[("CSV", "*.csv")])
         if path:
             try:
                 export_csv(path, rows, fields)
-                messagebox.showinfo("Export", "CSV file saved.", parent=self.root)
+                messagebox.showinfo(self.tr("Export"), self.tr("CSV file saved."), parent=self.root)
             except OSError as exc:
-                messagebox.showerror("Export failed", str(exc), parent=self.root)
+                messagebox.showerror(self.tr("Export failed"), self.tr.error(exc), parent=self.root)
 
     def export_rates(self):
         self.save_csv(self.market_rows(), ["code", "rate", "base", "date", "source"], "QuantumFX-Rates.csv")
@@ -647,19 +697,19 @@ class App:
 
     def export_chart(self):
         if not self.chart_points or not self.chart_key:
-            self.chart_status.set("Load a rate history first.")
+            self.chart_status.set(self.tr("Load a rate history first."))
             return
         base, target, _ = self.chart_key
         self.save_csv([{"date": day, "base": base, "target": target, "rate": str(rate)} for day, rate in self.chart_points],
                       ["date", "base", "target", "rate"], f"QuantumFX-{base}-{target}.csv")
 
     def clear_history(self):
-        if messagebox.askyesno("Clear history", "Permanently delete all saved conversions?", parent=self.root):
+        if messagebox.askyesno(self.tr("Clear history"), self.tr("Permanently delete all saved conversions?"), parent=self.root):
             try:
                 self.store.clear()
                 self.fill_history()
             except OSError as exc:
-                messagebox.showerror("Deletion failed", str(exc), parent=self.root)
+                messagebox.showerror(self.tr("Deletion failed"), self.tr.error(exc), parent=self.root)
 
     def load_chart(self):
         if "chart" in self.pending:
@@ -668,26 +718,33 @@ class App:
         self.chart_key = key
         self.chart_points = []
         self.draw_chart()
-        self.chart_status.set("Loading historical reference rates …")
+        self.chart_status.set(self.tr("Loading historical reference rates …"))
         self.chart_btn.configure(state="disabled")
         def done(result):
             if self.chart_key != key or key != (self.base.get(), self.target.get(), int(self.days.get())):
-                self.chart_status.set("Selection changed · reload the chart.")
+                self.chart_status.set(self.tr("Selection changed · reload the chart."))
                 return
             self.chart_points, source = result
-            first, last = self.chart_points[0][1], self.chart_points[-1][1]
-            change = (last / first - 1) * 100
-            self.chart_status.set(f"{key[0]}/{key[1]} · {change:+.2f} % over the available period · "
-                                  f"{len(self.chart_points)} data points · {'Cache' if source == 'cache' else 'Reference rates'}")
+            self.chart_source = source
+            self.describe_chart()
             self.animator.run("chart", lambda t: self.draw_chart(t), 700)
         self.submit("chart", lambda: self.service.history(*key), done)
+
+    def describe_chart(self):
+        first, last = self.chart_points[0][1], self.chart_points[-1][1]
+        change = (last / first - 1) * 100
+        key = self.chart_key or (self.base.get(), self.target.get(), int(self.days.get()))
+        self.chart_status.set(self.tr("{pair} · {change} % over the available period · {count} data points · {source}",
+                                     pair=f"{key[0]}/{key[1]}", change=self.tr.amount(f"{change:+.2f}"),
+                                     count=len(self.chart_points),
+                                     source=self.tr("Cache" if getattr(self, "chart_source", None) == "cache" else "Reference rates")))
 
     def draw_chart(self, progress=1.0):
         c = self.canvas
         c.delete("all")
         w, h = c.winfo_width(), c.winfo_height()
         if not self.chart_points:
-            c.create_text(w / 2, h / 2, text="Load rate history to see the trend", fill=MUTED, width=max(180, w - 60))
+            c.create_text(w / 2, h / 2, text=self.tr("Load rate history to see the trend"), fill=MUTED, width=max(180, w - 60))
             return
         values = [float(p[1]) for p in self.chart_points]
         low, high = min(values), max(values)
@@ -697,7 +754,7 @@ class App:
         for i in range(5):
             y = top + (bottom - top) * i / 4
             c.create_line(left, y, right, y, fill="#263951")
-            c.create_text(left - 9, y, anchor="e", text=f"{high - (high-low)*i/4:.4f}", fill=MUTED, font=("Segoe UI", 9))
+            c.create_text(left - 9, y, anchor="e", text=f"{high - (high-low)*i/4:.4f}", fill=MUTED, font=(self.font_family, 9))
         ordinals = [datetime.fromisoformat(p[0]).toordinal() for p in self.chart_points]
         span = max(1, ordinals[-1] - ordinals[0])
         self.chart_coords = [(left + (right-left) * (day-ordinals[0]) / span,
@@ -726,7 +783,7 @@ class App:
 
     def callback_error(self, kind, value, tb):
         logging.error("UI error", exc_info=(kind, value, tb))
-        messagebox.showerror("QuantumFX", "This action failed. See the local log file for details.", parent=self.root)
+        messagebox.showerror("QuantumFX", self.tr("This action failed. See the local log file for details."), parent=self.root)
 
     def close(self):
         self.animator.stop()

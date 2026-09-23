@@ -6,12 +6,12 @@
 
 Compare rates, understand fees, and keep your conversions in view.
 
-[![Version](https://img.shields.io/badge/Version-2.2.1-a998ff?style=flat-square)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/tag/v2.2.1)
+[![Version](https://img.shields.io/badge/Version-2.3.0-a998ff?style=flat-square)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/tag/v2.3.0)
 ![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011%20%C2%B7%20x64-72e7cf?style=flat-square)
-![Language](https://img.shields.io/badge/Interface-English-c8c3ef?style=flat-square)
+![Languages](https://img.shields.io/badge/Languages-EN%20%C2%B7%20DE%20%C2%B7%20KO%20%C2%B7%20SV-c8c3ef?style=flat-square)
 [![Build](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/actions/workflows/python-app.yml/badge.svg)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/actions/workflows/python-app.yml)
 
-### [↓ Download QuantumFX.exe](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX.exe)
+### [↓ Download QuantumFX.exe](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.3.0/QuantumFX.exe)
 
 **No installation. No account. Python included.**
 
@@ -37,7 +37,7 @@ A calm, dark interface with purple and mint accents, rounded glass-style surface
 
 ## 🚀 Ready in a minute
 
-1. **[Download QuantumFX.exe](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX.exe)** and double-click to launch.
+1. **[Download QuantumFX.exe](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.3.0/QuantumFX.exe)** and double-click to launch.
 2. **Enter an amount and choose currencies**, such as `100` from EUR to USD.
 3. Optionally expand **Add fees** and enter your deductions.
 4. Select **Convert & save**. Your result appears immediately and is saved in local history.
@@ -50,9 +50,24 @@ Select **Load history** to display a rate chart. Reload after changing the curre
 
 | File | Contents |
 | :--- | :--- |
-| [**QuantumFX.exe**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX.exe) | Ready-to-run Windows application. |
-| [**Windows package (.zip)**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/QuantumFX-2.2.1-Windows-x64.zip) | EXE, guide, verification report, and license notices. |
-| [**SHA256 checksums**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.1/SHA256SUMS.txt) | Checksums for verifying downloaded files. |
+| [**QuantumFX.exe**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.3.0/QuantumFX.exe) | Ready-to-run Windows application. |
+| [**Windows package (.zip)**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.3.0/QuantumFX-2.3.0-Windows-x64.zip) | EXE, guide, verification report, and license notices. |
+| [**SHA256 checksums**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.3.0/SHA256SUMS.txt) | Checksums for verifying downloaded files. |
+
+## 🌍 Choose your language
+
+Use **Language** at the bottom of the sidebar to switch the interface immediately:
+
+| Language | Selector label |
+| :--- | :--- |
+| English | English |
+| German | Deutsch |
+| Korean (South Korea) | 한국어 |
+| Swedish | Svenska |
+
+Your choice is saved for the next launch. Switching keeps your amount, currencies, fees, custom offers, history, and chart data. Snake pauses safely and retains its current board. Menus, help, tooltips, validation messages, and game controls are translated. Korean uses a Windows font with Hangul support.
+
+Displayed amounts follow the selected language: `1,234.56` in English/Korean, `1.234,56` in German, and `1 234,56` in Swedish. Dot and comma decimal input remain accepted without thousands separators. CSV columns and stored values stay stable across languages. Windows file dialogs and operating-system errors may use the system language.
 
 ## ⌨️ Less clicking, faster results
 
@@ -78,7 +93,7 @@ Fixed fees use the source currency. The calculation is:
 (amount − amount × percentage / 100 − fixed fee) × target rate / base rate
 ```
 
-Only displayed amounts are rounded (`ROUND_HALF_UP`) and use English formatting, such as `1,234.56`. CSV exports retain unrounded decimal values, use UTF-8 with a BOM, and separate columns with semicolons. Fee comparison uses the same reference rate for every offer; individual exchange-rate markups are not included.
+Only displayed amounts are rounded (`ROUND_HALF_UP`) and use the selected language’s formatting. CSV exports retain unrounded decimal values, use UTF-8 with a BOM, and separate columns with semicolons. Fee comparison uses the same reference rate for every offer; individual exchange-rate markups are not included.
 
 Entered fees remain active when their fields are collapsed, with a visible indicator.
 
@@ -100,7 +115,7 @@ Charts contain only retrieved or saved historical data. Missing values are never
 
 **No account, no telemetry, no broker connection.** Conversion amounts and history are not sent to the rate provider. Requests contain currencies, date ranges, and standard connection information.
 
-Application data is stored under `%LOCALAPPDATA%\QuantumFX`. The EXE needs no installation; preferences and history are saved separately in this user folder. Existing profiles remain compatible with the English release.
+Application data is stored under `%LOCALAPPDATA%\QuantumFX`. The EXE needs no installation; preferences and history are saved separately in this user folder. Existing profiles remain compatible with the multilingual release.
 
 <details>
 <summary><strong>Stored files and launch options</strong></summary>
@@ -126,6 +141,9 @@ Manual requests remain available with `--offline`. Set `QUANTUMFX_DATA_DIR` to u
 </details>
 
 ## 🛠️ For developers
+
+Translations are stored in `quantumfx/i18n.py`. Each language uses the same message keys and formatting placeholders. Tests check catalog completeness, placeholder compatibility, live switching, saved preferences, icons, and localized amounts. Add a complete catalog and a native-language label in `LANGUAGES` to introduce another language.
+
 
 **Python 3.10+ with Tk.** The application needs no external Python runtime packages. Test and build dependencies are listed in `requirements-dev.txt`.
 
@@ -171,7 +189,8 @@ quantumfx/
 ├── app.py       Interface and user workflows
 ├── core.py      Rates, calculations, and local storage
 ├── ui.py        Styling, icons, and animations
-└── snake.py     Game rules and arcade interface
+├── snake.py     Game rules and arcade interface
+└── i18n.py      Translation catalogs and locale-specific presentation
 main.py          Application entry point
 assets/          Graphics and application icon
 tests/           Tests for the current application
@@ -185,7 +204,7 @@ See the [verification report](VERIFICATION.md) for test results and limitations,
 
 QuantumFX is based on the [original project by oneiric-hammer](https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform), starting from commit `1a431f630f32f57b2b93e8c1d1df5aab4b9cae38`. The [original license](LICENSE) is preserved. Bundled runtime license notices are in [licenses/](licenses/).
 
-The original multilingual interface and README remain archived under [legacy/](legacy/). This historical archive retains its original language resources. The current application, documentation, and release packages are in English; the original application is not included in the new EXE.
+The original multilingual interface and README remain archived under [legacy/](legacy/). This historical archive retains its original language resources. The current application supports English, German, Korean, and Swedish. Repository documentation remains in English; the original application is not included in the new EXE.
 
 ---
 

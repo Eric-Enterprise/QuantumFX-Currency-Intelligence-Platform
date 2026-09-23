@@ -213,3 +213,85 @@ def test_collapsed_fees_keep_values_and_show_active_state(app):
     app.amount.set("100")
     app.calculate(save=False)
     assert app.last_result[0]["fee"] == 2
+
+@pytest.mark.parametrize('language', ['de', 'ko', 'sv', 'en'])
+def test_language_switch_preserves_state_and_translates(app, language):
+    from quantumfx.core import Store
+    from quantumfx.i18n import LANGUAGES
+    # Switch away first so the English case also exercises a rebuild.
+    app.change_language('sv' if language == 'en' else 'en')
+    app.amount.set('1234.56')
+    app.percent.set('2')
+    app.fixed.set('1')
+    app.calculate()
+    rows = list(app.store.rows)
+    app.search.set('GBP')
+    app.offers[0][0].set('My custom offer')
+    app.offers[0][1].set('3')
+    app.compare()
+    app.chart_key = ('EUR', 'USD', 30)
+    app.chart_points = [('2026-01-01', D('1.1')), ('2026-01-02', D('1.2'))]
+    app.chart_source = 'cache'
+    app.snake.start()
+    game = app.snake.game
+    app.tabs.select(app.history_tab)
+    app.language_choice.set(LANGUAGES[language])
+    app.language_box.event_generate('<<ComboboxSelected>>')
+    app.root.update()
+    assert app.tr.language == language
+    assert Store(app.store.folder).prefs['language'] == language
+    assert app.store.rows == rows
+    assert app.amount.get() == '1234.56' and app.percent.get() == '2' and app.fixed.get() == '1'
+    assert app.tabs.select() == str(app.history_tab)
+    assert app.page_title.cget('text') == app.tr('History')
+    assert app.copy_btn.text == app.tr('Copy') and app.copy_btn.icon_name == 'copy'
+    assert app.offers[0][0].get() == 'My custom offer' and app.offers[0][1].get() == '3'
+    assert app.offers[1][0].get() == app.tr('Offer {n}', n=2)
+    assert len(app.compare_tree.get_children()) == 3
+    assert app.snake.game is game and not app.snake.running and app.snake.timer is None
+    assert app.search.get() == 'GBP' and len(app.search.trace_info()) == 1
+    assert app.chart_key == ('EUR', 'USD', 30) and len(app.chart_points) == 2
+    assert app.tr('Cache') in app.chart_status.get()
+    assert app.tr('Fees') in app.detail.get()
+    assert app.result.get() == app.money(app.last_result[0]['net'], app.target.get()) + ' ' + app.target.get()
+    app.tabs.select(app.converter)
+    app.root.geometry('980x700')
+    app.root.update()
+    app.viewport.yview_moveto(1)
+    app.root.update()
+    assert app.viewport.yview()[1] == 1.0
+    for _, _, button in app.nav_buttons:
+        text_box = button.bbox(button.find_all()[-1])
+        assert text_box[2] <= button.winfo_width(), (language, button.text, text_box)
+
+
+def test_language_switch_with_pending_work_and_save_failure(app, monkeypatch):
+    app.pending.update({'rates', 'chart'})
+    def fail_save():
+        raise OSError('simulated save failure')
+    monkeypatch.setattr(app.store, 'save', fail_save)
+    app.change_language('ko')
+    assert app.refresh_btn.disabled and app.chart_btn.disabled
+    assert app.feedback.get() == app.tr('Language could not be saved.')
+    assert app.tr('Loading historical reference rates …') == app.chart_status.get()
+    app.events.put(('rates', app.apply_snapshot, app.snapshot, None))
+    app.root.after_cancel(app.poll_id)
+    app.poll()
+    assert not app.refresh_btn.disabled and 'rates' not in app.pending
+    assert app.tr('DEMO · Undated sample rates · Do not use for actual conversions') == app.status.get()
+
+
+def test_saved_language_restored_in_new_window(app):
+    import tkinter as tk
+    from quantumfx.app import App
+    app.change_language('ko')
+    window = tk.Toplevel(app.root)
+    restored = App(window, app.store.folder, offline=True)
+    try:
+        window.update()
+        assert restored.tr.language == 'ko'
+        assert restored.copy_btn.text == '복사'
+        assert restored.language_choice.get() == '한국어'
+        assert restored.font_family == 'Malgun Gothic'
+    finally:
+        restored.close()

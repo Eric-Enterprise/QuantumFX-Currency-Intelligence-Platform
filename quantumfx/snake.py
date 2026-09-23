@@ -1,4 +1,5 @@
 """Snake model and a self-contained arcade panel with scoped keyboard controls."""
+from .i18n import Translator, font_family
 import random
 import tkinter as tk
 from tkinter import ttk
@@ -57,28 +58,29 @@ class SnakeGame:
 
 
 class SnakePanel(ttk.Frame):
-    def __init__(self, parent, store, animator):
+    def __init__(self, parent, store, animator, translator=None):
         super().__init__(parent)
+        self.tr = translator or Translator()
         self.store, self.animator = store, animator
         self.game = SnakeGame()
         self.running = False
         self.timer = None
         self.started = False
-        self.speed = tk.StringVar(value="Normal")
+        self.speed = tk.StringVar(value=self.tr("Normal"))
         saved = store.prefs.get("snake_highscore", 0)
         self.highscore = saved if isinstance(saved, int) and 0 <= saved <= 4000 else 0
         self.caption = tk.StringVar()
-        self.notice = tk.StringVar(value="Arrow keys or WASD · Space to pause · Enter to restart")
+        self.notice = tk.StringVar(value=self.tr("Arrow keys or WASD · Space to pause · Enter to restart"))
         head = ttk.Frame(self)
         head.pack(fill="x", pady=(0, 14))
-        ttk.Label(head, text="A little break. A longer snake.", font=("Segoe UI", 19, "bold")).pack(anchor="w")
-        ttk.Label(head, textvariable=self.caption, foreground=MINT, font=("Segoe UI", 12)).pack(anchor="w", pady=8)
+        ttk.Label(head, text=self.tr("A little break. A longer snake."), font=(font_family(self.tr.language), 19, "bold")).pack(anchor="w")
+        ttk.Label(head, textvariable=self.caption, foreground=MINT, font=(font_family(self.tr.language), 12)).pack(anchor="w", pady=8)
         actions = ttk.Frame(self)
         actions.pack(fill="x")
-        MotionButton(actions, "New game", self.start, animator, True).pack(side="left")
-        self.pause_btn = MotionButton(actions, "Pause / Resume", self.toggle, animator)
+        MotionButton(actions, self.tr("New game"), self.start, animator, True).pack(side="left")
+        self.pause_btn = MotionButton(actions, self.tr("Pause / Resume"), self.toggle, animator)
         self.pause_btn.pack(side="left", padx=10)
-        speeds = ttk.Combobox(actions, textvariable=self.speed, values=("Relaxed", "Normal", "Fast"), width=12, state="readonly")
+        speeds = ttk.Combobox(actions, textvariable=self.speed, values=(self.tr("Relaxed"), self.tr("Normal"), self.tr("Fast")), width=12, state="readonly")
         speeds.pack(side="left", padx=8)
         speeds.bind("<<ComboboxSelected>>", lambda e: self.pause())
         self.canvas = tk.Canvas(self, background=BG, highlightthickness=0, takefocus=True, height=460)
@@ -91,7 +93,7 @@ class SnakePanel(ttk.Frame):
         self.update_caption()
 
     def update_caption(self):
-        self.caption.set(f"SCORE  {self.game.score:03d}     /     BEST  {self.highscore:03d}")
+        self.caption.set(self.tr("SCORE  {score}     /     BEST  {best}", score=f"{self.game.score:03d}", best=f"{self.highscore:03d}"))
 
     def start(self):
         self.pause()
@@ -104,7 +106,7 @@ class SnakePanel(ttk.Frame):
 
     def schedule(self):
         if self.running and self.timer is None:
-            delay = {"Relaxed": 170, "Normal": 115, "Fast": 75}.get(self.speed.get(), 115)
+            delay = {self.tr("Relaxed"): 170, self.tr("Normal"): 115, self.tr("Fast"): 75}.get(self.speed.get(), 115)
             self.timer = self.after(delay, self.tick)
 
     def tick(self):
@@ -119,7 +121,7 @@ class SnakePanel(ttk.Frame):
             try:
                 self.store.save()
             except OSError:
-                self.notice.set("High score is kept for this session; saving failed.")
+                self.notice.set(self.tr("High score is kept for this session; saving failed."))
         if self.game.over:
             self.running = False
         self.update_caption()
@@ -185,10 +187,10 @@ class SnakePanel(ttk.Frame):
             rounded(c, ox+x*cell+1, oy+y*cell+1, ox+(x+1)*cell-1, oy+(y+1)*cell-1,
                     radius=5, fill=MINT if i == 0 else "#249f85", outline="")
         if not self.running:
-            label = "YOU WIN!" if self.game.won else ("GAME OVER" if self.game.over else ("PAUSE" if self.started else "SNAKE ARCADE"))
+            label = self.tr("YOU WIN!") if self.game.won else (self.tr("GAME OVER") if self.game.over else (self.tr("PAUSE") if self.started else self.tr("SNAKE ARCADE")))
             rounded(c, w/2-150, h/2-44, w/2+150, h/2+44, fill="#1e2940", outline=ACCENT)
-            c.create_text(w/2, h/2-10, text=label, fill=TEXT, font=("Segoe UI", 20, "bold"))
-            c.create_text(w/2, h/2+22, text="New game / Space", fill=MUTED, font=("Segoe UI", 10))
+            c.create_text(w/2, h/2-10, text=label, fill=TEXT, font=(font_family(self.tr.language), 20, "bold"))
+            c.create_text(w/2, h/2+22, text=self.tr("New game / Space"), fill=MUTED, font=(font_family(self.tr.language), 10))
 
     def destroyed(self, event):
         if event.widget == self:

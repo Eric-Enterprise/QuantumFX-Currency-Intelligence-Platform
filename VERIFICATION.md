@@ -1,4 +1,4 @@
-# QuantumFX 2.2.1 · Verification report
+# QuantumFX 2.3.0 · Verification report
 
 Verification date: September 23, 2026.
 
@@ -12,11 +12,17 @@ Snake coverage includes growth, scoring, wall/self collisions, occupied cells, r
 
 ## Release checks
 
-The English build passed all 75 automated tests, including 20 real Tk interface tests. The rebuilt Windows EXE completed its self-test with `ok: true` and exit code 0, displaying the result as `1,042.13 EUR`. The packaged self-test checks conversion, history, fee comparison, chart drawing, section switching, and Snake initialization using a temporary profile without network access.
+The multilingual build passed all 91 automated tests, including 26 real Tk interface tests. The Windows EXE was successfully built, but Windows Application Control blocked it from launching on this computer. Its packaged self-test therefore could not be completed. No security policy was changed. The same self-test passed through the Python source with `ok: true`, one saved conversion, and all four languages (`en`, `de`, `ko`, `sv`). This does not establish that the packaged EXE can run on every Windows configuration. The packaged self-test checks conversion, history, fee comparison, chart drawing, section switching, and Snake initialization using a temporary profile without network access.
 
 The previous 2.2.0 release passed 75 tests and the EXE self-test. Its interface was visually inspected in windowed and fullscreen modes, including Snake. That visual check predates the English translation.
 
 Historical live-data checks on September 22, 2026 returned 30 currencies with a rate date of September 21, 2026, and 64 EUR/USD chart points from June 24 through September 21. These are recorded observations, not a claim about current provider availability.
+
+## Multilingual coverage
+
+Catalog tests check identical message keys and format placeholders in English, German, Korean, and Swedish. GUI tests switch every language, preserve values and custom offers, retain chart data, pause Snake, keep icons, and verify navigation fits the minimum window size. Additional tests exercise pending requests, preference-save failures, and restoring a saved language in a new window.
+
+System file dialogs and operating-system error text may follow the Windows display language. The translations have not had an independent native-speaker review.
 
 ## Environment and limits
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.0 — Multilingual desktop
+
+- Switch instantly between English, German, Korean, and Swedish from the sidebar.
+- Save the selected language and restore it on the next launch.
+- Translate navigation, help, tooltips, errors, fee comparisons, and Snake controls.
+- Retain current inputs, offers, chart data, and saved history during switching.
+- Pause Snake safely while preserving its board and score.
+- Format displayed amounts for the selected language and use a Korean-capable font.
+- Keep stored data and CSV formats compatible across languages.
+- Add catalog validation and GUI regression tests for language changes.
+
 ## 2.2.1 — English edition
 
 - Translate the current interface, help, tooltips, errors, and Snake controls into English.

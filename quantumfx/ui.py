@@ -1,4 +1,5 @@
 """Small native UI primitives; animations never block the Tk event loop."""
+from .i18n import Translator, font_family
 import time
 import tkinter as tk
 import math
@@ -124,6 +125,7 @@ def icon(canvas, name, x, y, color=TEXT, size=18):
 
 
 def infer_icon(text):
+    text = getattr(text, "source", text)
     for word, name in [("copy", "copy"), ("refresh", "refresh"), ("Fullscreen", "expand"),
                        ("Window", "expand"), ("Close", "close"), ("CSV", "download"),
                        ("export", "download"), ("remove", "trash"), ("clear", "trash"),
@@ -155,7 +157,7 @@ class Tooltip:
         self.popup.overrideredirect(True)
         self.popup.attributes("-topmost", True)
         tk.Label(self.popup, text=self.text, bg="#31405f", fg=TEXT, padx=12, pady=9,
-                 wraplength=290, justify="left", font=("Segoe UI", 10)).pack()
+                 wraplength=290, justify="left", font=(font_family(getattr(self.text, "language", "en")), 10)).pack()
         self.popup.update_idletasks()
         x = min(self.widget.winfo_rootx(), self.widget.winfo_screenwidth()-self.popup.winfo_reqwidth()-12)
         y = min(self.widget.winfo_rooty()+self.widget.winfo_height()+6, self.widget.winfo_screenheight()-self.popup.winfo_reqheight()-12)
@@ -181,7 +183,7 @@ class MotionButton(tk.Canvas):
         self.hover = 0.0
         self.focused = False
         self.pressed = False
-        self.face = tkfont.Font(family="Segoe UI", size=10, weight="bold" if accent else "normal")
+        self.face = tkfont.Font(family=font_family(getattr(text, "language", "en")), size=10, weight="bold" if accent else "normal")
         width = self.face.measure(text) + (64 if self.icon_name else 32)
         super().__init__(parent, width=width, height=48, bg=background, highlightthickness=0,
                          bd=0, takefocus=True, cursor="hand2")
@@ -261,7 +263,8 @@ class MotionButton(tk.Canvas):
 
 
 class Hero(tk.Canvas):
-    def __init__(self, parent):
+    def __init__(self, parent, translator=None):
+        self.tr = translator or Translator()
         super().__init__(parent, bg=BG, height=96, highlightthickness=0)
         self.bind("<Configure>", lambda e: self.draw())
 
@@ -274,16 +277,17 @@ class Hero(tk.Canvas):
                 self.create_oval(w-290+i*5, -90+i*5, w+70-i*5, 215-i*5,
                                  outline=blend("#5c6095", "#23354e", i/12), width=2)
             icon(self, "sparkles", w-130, 29, "#c2b9ff", 46)
-        self.create_text(25, 30, anchor="w", text="Your money. In any currency.", fill=TEXT, font=("Segoe UI", 23, "bold"))
-        self.create_text(25, 66, anchor="w", text="Enter an amount. Choose currencies. Get clarity.", fill="#d3dcee", font=("Segoe UI", 10))
+        self.create_text(25, 30, anchor="w", text=self.tr("Your money. In any currency."), fill=TEXT, font=(font_family(self.tr.language), 23, "bold"))
+        self.create_text(25, 66, anchor="w", text=self.tr("Enter an amount. Choose currencies. Get clarity."), fill="#d3dcee", font=(font_family(self.tr.language), 10))
 
 
 class GlassResult(tk.Canvas):
-    def __init__(self, parent, result, detail):
+    def __init__(self, parent, result, detail, translator=None):
+        self.tr = translator or Translator()
         super().__init__(parent, bg=BG, height=225, highlightthickness=0)
         self.result, self.detail = result, detail
         self.glow = 0
-        self.face = tkfont.Font(family="Segoe UI", size=30, weight="bold")
+        self.face = tkfont.Font(family=font_family(self.tr.language), size=30, weight="bold")
         self.traces = [(v, v.trace_add("write", lambda *args: self.draw())) for v in (result, detail)]
         self.bind("<Configure>", lambda e: self.draw())
         self.bind("<Destroy>", self.dispose)
@@ -293,7 +297,7 @@ class GlassResult(tk.Canvas):
         w, h = max(100, self.winfo_width()), self.winfo_height()
         glass(self, 1, 1, w-2, h-7, radius=24, top="#294959", bottom="#1b293f", glow=self.glow)
         icon(self, "check", 24, 23, MINT, 19)
-        self.create_text(52, 33, anchor="w", text="Your result · after fees", fill="#c4dfdc", font=("Segoe UI", 10))
+        self.create_text(52, 33, anchor="w", text=self.tr("Your result · after fees"), fill="#c4dfdc", font=(font_family(self.tr.language), 10))
         value = self.result.get()
         face = self.face
         face.configure(size=30)
@@ -301,7 +305,7 @@ class GlassResult(tk.Canvas):
             face.configure(size=face.cget("size")-1)
         self.create_text(24, 88, anchor="w", text=value, fill=MINT, font=face)
         self.create_line(24, 122, w-24, 122, fill="#3b5866")
-        self.create_text(24, 142, anchor="nw", text=self.detail.get(), fill=TEXT, font=("Segoe UI", 10), width=w-48)
+        self.create_text(24, 142, anchor="nw", text=self.detail.get(), fill=TEXT, font=(font_family(self.tr.language), 10), width=w-48)
 
     def pulse(self, value):
         self.glow = value
