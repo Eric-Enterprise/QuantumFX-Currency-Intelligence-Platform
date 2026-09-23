@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">QuantumFX — Währungen. Klar im Blick.</title>
+  <desc id="desc">Violette und mintfarbene Linien auf dunklem Hintergrund. Windows Desktop, Version 2.2.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101528"/><stop offset="1" stop-color="#201b3d"/></linearGradient>
+    <linearGradient id="accent"><stop stop-color="#a998ff"/><stop offset="1" stop-color="#72e7cf"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#8d72f7" stop-opacity=".23"/><stop offset="1" stop-color="#8d72f7" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="360" rx="28" fill="url(#bg)"/>
+  <ellipse cx="980" cy="145" rx="340" ry="240" fill="url(#glow)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity=".06"><path d="M740 65V305M820 65V305M900 65V305M980 65V305M1060 65V305M1140 65V305M720 105H1150M720 165H1150M720 225H1150M720 285H1150"/></g>
+  <path d="M735 266L791 236L839 252L895 184L950 205L1006 134L1059 159L1125 83" fill="none" stroke="url(#accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1125" cy="83" r="9" fill="#72e7cf"/>
+  <rect x="60" y="54" width="205" height="31" rx="15" fill="#ffffff" fill-opacity=".07" stroke="#ffffff" stroke-opacity=".12"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <text x="78" y="75" fill="#c8c3ef" font-size="12" letter-spacing="2">WINDOWS DESKTOP · 2.2</text>
+    <text x="58" y="170" fill="#f4f3ff" font-size="70" font-weight="700" letter-spacing="-3">QuantumFX</text>
+    <text x="62" y="222" fill="#d8d8ed" font-size="28">Währungen. Klar im Blick.</text>
+    <text x="62" y="289" fill="#9da9c1" font-size="17">Umrechnen   /   Vergleichen   /   Verstehen</text>
+  </g>
+</svg>

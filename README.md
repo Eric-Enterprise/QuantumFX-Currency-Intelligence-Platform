@@ -1,141 +1,198 @@
-# QuantumFX 2.2 · Windows Desktop
+<div align="center">
 
-Deutschsprachiger Währungsrechner mit Tagesreferenzkursen, Kursdiagrammen,
-Gebührenvergleich und lokalem Verlauf. Weiterentwicklung von
-https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform
+![QuantumFX – Währungen. Klar im Blick.](assets/readme-banner.svg)
 
-## Neu in 2.2
+**Dein Währungsrechner für den Windows-Desktop.**
 
-Geschichtete Glasoptik mit Farbverläufen, Lichtkanten und animierten Schaltflächen.
-Die Glasflächen werden in der Anwendung gezeichnet und bleiben gut lesbar.
-Alle wichtigen Aktionen haben skalierbare Linien-Icons und Textbeschriftungen.
-Kurze Navigationsnamen, Hilfetexte bei Mauszeiger oder Tastaturfokus und deutliche
-Von-/Nach-Felder machen den Ablauf verständlicher. Optionale Gebühren können
-aufgeklappt werden; eingetragene Werte bleiben beim Einklappen erhalten und werden
-als aktiv gekennzeichnet. Ungültige Beträge werden am Feld markiert. Kopieren ist
-erst mit einem gültigen aktuellen Ergebnis möglich. Strg+F öffnet die Währungssuche.
-Tabellen haben abwechselnde Zeilenfarben und horizontale Scrollleisten.
+Kurse vergleichen, Gebühren verstehen und Umrechnungen im Blick behalten.
 
-## Funktionen seit 2.1
+[![Version](https://img.shields.io/badge/Version-2.2.0-a998ff?style=flat-square)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/tag/v2.2.0)
+![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011%20%C2%B7%20x64-72e7cf?style=flat-square)
+![Sprache](https://img.shields.io/badge/Oberfl%C3%A4che-Deutsch-c8c3ef?style=flat-square)
+[![Build](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/actions/workflows/python-app.yml/badge.svg)](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/actions/workflows/python-app.yml)
 
-Die neue Oberfläche startet im Vollbild mit Seitenleiste, violetten und mintfarbenen
-Akzenten, animierten Schaltflächen, Diagrammaufbau und Ergebnisrückmeldung.
-F11 wechselt den Vollbildmodus; Escape verlässt ihn. Mit --windowed startet die
-Anwendung direkt im normalen Fenster. Auf schmalen Fenstern stehen Rechner und
-Diagramm untereinander. Animationen lassen sich links abschalten; die Einstellung
-wird gespeichert. Diagrammdaten können zusätzlich als CSV exportiert werden.
+### [↓ QuantumFX.exe herunterladen](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX.exe)
 
-Snake Arcade ist direkt über die Seitenleiste erreichbar. Neues Spiel startet
-eine Runde, Pfeiltasten oder WASD steuern die Schlange, Leertaste pausiert und
-Enter beginnt neu. Zuerst das Spielfeld anklicken, falls die Tastatur einen anderen
-Bereich fokussiert. Drei Geschwindigkeiten stehen bereit. Der Highscore wird lokal
-gespeichert. Beim Bereichswechsel und bei Escape pausiert die Runde automatisch.
-Die Herkunft des Originalprojekts bleibt im Hilfebereich genannt.
+**Keine Installation. Kein Konto. Python bereits enthalten.**
 
-## Direkt starten
+[Alle Downloads](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/latest) · [Funktionen](#-was-quantumfx-kann) · [Schnellstart](#-in-einer-minute-startklar) · [Entwicklung](#-für-entwickler)
 
-QuantumFX.exe per Doppelklick starten. Windows 10/11, 64 Bit (x64).
-Die portable EXE enthält Python und Tk. Kein Installer, keine separate
-Python-Installation und keine Administratorrechte für den normalen Betrieb nötig.
-Beim ersten Start kann das Entpacken der enthaltenen Laufzeit einige Sekunden dauern.
-Die Datei ist nicht digital signiert. Andere PCs wurden nicht separat geprüft.
+</div>
 
-## Funktionen
+---
 
-- 30 Währungen beim überprüften Online-Abruf; Umfang abhängig vom Kursanbieter.
-- Dezimalgenaue Umrechnung beliebiger verfügbarer Währungspaare.
-- Prozentuale und fixe Gebühren in der Ausgangswährung.
-- Vergleich von drei selbst eingetragenen Gebührenangeboten.
-- Historische Tageskurse über 30, 90 oder 365 Tage; Werte per Maus ablesen.
-- Favoriten, Währungstausch und durchsuchbare Kursübersicht.
-- Bis zu 1.000 gespeicherte Umrechnungen inklusive Kursdatum und Quelle.
-- CSV-Export von Kursübersicht und Verlauf (UTF-8-BOM, Semikolon).
-- Hintergrundabrufe, Offline-Cache, atomare Schreibvorgänge und Fehlerprotokoll.
-- Größenveränderliches Fenster mit scrollbar erreichbarem Rechnerinhalt.
+## ✨ Was QuantumFX kann
 
-Die neue Oberfläche ist auf Deutsch. Die ursprüngliche Oberfläche mit vier
-Sprachen ist unverändert unter legacy/QuantumFX-original.py archiviert.
-Sie ist nicht Bestandteil der neuen EXE.
+Eine ruhige, dunkle Oberfläche mit violetten und mintfarbenen Akzenten, abgerundeten Glasflächen und klar beschrifteten Icons. Animationen geben Rückmeldung und lassen sich jederzeit abschalten. Im Vollbild bleibt viel Platz für das Wesentliche; kleinere Fenster passen die Anordnung automatisch an.
 
-## Bedienung
+| | Funktion | Dein Nutzen |
+| :---: | :--- | :--- |
+| 💱 | **Währungsrechner** | Verfügbare Währungspaare mit Dezimalrechnung umrechnen und direkt tauschen. |
+| 📈 | **Kursdiagramme** | Historische Tageskurse für 30, 90 oder 365 Tage ansehen und Werte per Maus ablesen. |
+| ⚖️ | **Gebührenvergleich** | Drei eigene Angebote mit prozentualen und festen Gebühren vergleichen. |
+| ⭐ | **Favoriten & Suche** | Häufig verwendete Paare speichern und Währungen schnell finden. |
+| 🗂️ | **Verlauf & Export** | Bis zu 1.000 Umrechnungen lokal behalten; Verlauf, Kurse und Diagrammdaten als CSV exportieren. |
+| 📴 | **Gespeicherte Kurse** | Den zuletzt abgerufenen Kursstand auch ohne Verbindung verwenden. |
+| 🐍 | **Snake Arcade** | Eine Pause einlegen: drei Geschwindigkeiten, flüssige Bewegung und lokaler Highscore. |
 
-1. Betrag ohne Tausendertrennzeichen eingeben: 1234,56 oder 1234.56.
-2. Ausgangs- und Zielwährung wählen.
-3. Optional Gebühren eintragen. Berechnung:
-   (Betrag - Betrag * Prozent / 100 - Fixgebühr) * Zielkurs / Basiskurs.
-4. Umrechnen & speichern drücken. Das Ergebnis wird lokal protokolliert.
-5. Für Diagramme Verlauf laden wählen. Nach Paar- oder Zeitraumwechsel neu laden.
+## 🚀 In einer Minute startklar
 
-Enter rechnet um, Strg+R lädt aktuelle Kurse, Strg+S tauscht die Währungen.
-Negative Werte, Exponentialschreibweise, Tausendertrennzeichen, mehr als acht
-Nachkommastellen und Beträge über einer Billion werden abgewiesen.
-Nur die Anzeige wird gerundet (ROUND_HALF_UP). CSV erhält Dezimalwerte ungerundet.
-Der Gebührenvergleich nimmt für alle Angebote denselben Referenzkurs an;
-individuelle Wechselkursaufschläge sind nicht enthalten.
+1. **[QuantumFX.exe herunterladen](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX.exe)** und per Doppelklick öffnen.
+2. **Betrag und Währungen wählen**, zum Beispiel `100` von EUR nach USD.
+3. Bei Bedarf **Gebühren aufklappen** und eintragen.
+4. **Umrechnen & speichern** anklicken. Das Ergebnis erscheint sofort und bleibt im lokalen Verlauf.
 
-## Datenqualität
+Für Kursdiagramme **Verlauf laden** wählen. Nach einem Wechsel des Währungspaars oder Zeitraums erneut laden.
 
-Quelle: Frankfurter v1 / EZB, https://frankfurter.dev/v1/ .
-Tagesreferenzkurse, keine Echtzeitkurse oder garantierten Bankangebote.
-Wochenenden und Feiertage können das Kursdatum zurückliegen lassen.
-v1 wird vom Anbieter weiterbetrieben, ist aber zugunsten von v2 abgekündigt.
-Der Anbieterzugriff ist in quantumfx/core.py zentral gekapselt.
+> **Windows 10/11 · 64 Bit:** Kein Installer und keine separate Python-Installation erforderlich. Beim ersten Start kann das Entpacken einige Sekunden dauern. Die EXE ist nicht digital signiert. Getestet wurde auf Windows 11 x64; andere PCs wurden nicht separat geprüft.
 
-Online abgerufen: validierte API-Daten mit tatsächlichem Kursdatum.
-Offline / gespeicherte Kurse: letzter gespeicherter Stand, auch wenn älter.
-DEMO: undatierte Beispielwerte aus dem Originalprojekt, nur zum Ausprobieren.
-Verlauf und CSV kennzeichnen diese Umrechnungen ausdrücklich als DEMO.
-Diagramme verwenden nur abgerufene oder gespeicherte historische Daten.
-Fehlende Daten werden nicht erfunden. Identische Währungspaare haben Kurs 1.
+### Downloads
 
-## Lokale Daten und Datenschutz
+| Datei | Inhalt |
+| :--- | :--- |
+| [**QuantumFX.exe**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX.exe) | Direkt ausführbare Windows-Anwendung. |
+| [**Windows-Paket (.zip)**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/QuantumFX-2.2-Windows-x64.zip) | EXE, Anleitung, Prüfbericht und Lizenzhinweise. |
+| [**SHA256-Prüfsummen**](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/download/v2.2.0/SHA256SUMS.txt) | Prüfsummen zum Abgleichen der Downloads. |
 
-Standardordner: %LOCALAPPDATA%\QuantumFX
-- settings.json: gewähltes Währungspaar und Favoriten.
-- rates.json: letzter Kursstand mit Kurs- und Abrufdatum.
-- chart-*.json: gespeicherte Zeitreihen nach Paar und Zeitraum.
-- history.json: bis zu 1.000 Umrechnungen.
-- QuantumFX.log: Fehlerprotokoll, maximal drei Dateien von je ca. 1 MB.
+## ⌨️ Weniger klicken, schneller arbeiten
 
-Beträge und Verlauf werden nicht an den Anbieter übertragen. Abfragen enthalten
-nur Währungen, Zeitraum und normale Verbindungsdaten. Kein Konto, keine Telemetrie,
-keine Broker-Verbindung, keine Handelsausführung.
-QUANTUMFX_DATA_DIR kann für Tests oder getrennte Profile einen anderen Ordner setzen.
-QuantumFX.exe --offline unterdrückt den automatischen Startabruf; manuelle Abrufe
-bleiben möglich. Verlauf löschen entfernt die lokal gespeicherten Umrechnungen.
+| Taste | Aktion |
+| :--- | :--- |
+| `Enter` | Im Rechner umrechnen |
+| `Strg` + `F` | Währungssuche öffnen |
+| `Strg` + `R` | Kurse aktualisieren |
+| `Strg` + `S` | Ausgangs- und Zielwährung tauschen |
+| `F11` | Vollbild ein- oder ausschalten |
+| `Esc` | Vollbild verlassen und Snake pausieren |
 
-## Aus dem Quellcode starten und bauen
+**Snake:** Spielfeld anklicken, mit Pfeiltasten oder `WASD` steuern, mit der Leertaste pausieren und mit `Enter` neu beginnen. Beim Bereichswechsel pausiert das Spiel automatisch.
 
-Python 3.10 oder neuer mit Tk. Keine externen Laufzeitpakete für die neue Anwendung.
-Start: python main.py
-Der ursprüngliche Dateiname startet ebenfalls die neue Anwendung.
+<details>
+<summary><strong>Beträge, Gebühren und Rundung</strong></summary>
 
-Windows-Entwicklungsumgebung:
-    python -m venv .venv
-    .venv/Scripts/python.exe -m pip install -r requirements-dev.txt
-    .venv/Scripts/python.exe -m pytest
-    $env:QUANTUMFX_GUI_TESTS = '1'
-    .venv/Scripts/python.exe -m pytest
-    ./build.ps1 -Python .venv/Scripts/python.exe
+Beträge ohne Tausendertrennzeichen eingeben: `1234,56` oder `1234.56`. Negative Werte, Exponentialschreibweise, mehr als acht Nachkommastellen und Beträge über einer Billion werden abgewiesen.
 
-Ergebnis: dist/QuantumFX.exe. Icon liegt bei. Nur die Neugenerierung mit
- tools/create_icon.py benötigt Pillow.
+Feste Gebühren gelten in der Ausgangswährung. Berechnet wird:
 
-Verpackter Fenstertest mit temporärem Profil:
-    ./dist/QuantumFX.exe --smoke-test C:/Pfad/smoke-result.json
-Nach dem Prozessende enthält die JSON-Datei ok: true oder eine Fehlermeldung.
-Tests unter tests/ prüfen die neue Produktionslogik. Historische Tests unter
-legacy/ bleiben als Referenz archiviert und gehören nicht zur neuen Testsuite.
+```text
+(Betrag − Betrag × Prozent / 100 − Fixgebühr) × Zielkurs / Basiskurs
+```
 
-## Herkunft und Grenzen
+Nur die Anzeige wird gerundet (`ROUND_HALF_UP`); CSV-Dateien enthalten die ungerundeten Dezimalwerte. Der Gebührenvergleich verwendet für alle Angebote denselben Referenzkurs. Individuelle Wechselkursaufschläge sind nicht enthalten.
 
-Original-Commit: 1a431f630f32f57b2b93e8c1d1df5aab4b9cae38.
-Original-Lizenz unverändert beigelegt. Die ursprüngliche README liegt unter legacy/.
-Geprüft auf dem verfügbaren Windows-11-System (x64). Andere Windows-Versionen
-und PCs sind nicht separat geprüft. Externer Kursdienst kann ausfallen.
-Keine automatischen Updates. Kein Installer erforderlich.
+Eingetragene Gebühren bleiben auch beim Einklappen aktiv und werden entsprechend gekennzeichnet.
 
-Weiterentwicklung im Fork Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform.
-Das Original-Repository bleibt separat. Die Windows-EXE wird zusätzlich vom
-GitHub-Actions-Workflow als herunterladbares Build-Artefakt bereitgestellt, wenn
-Tests und Build erfolgreich durchlaufen. Ein GitHub-Release ist nicht erforderlich.
+</details>
+
+## 🌐 Welche Kurse du siehst
+
+QuantumFX bezieht **Tagesreferenzkurse über Frankfurter v1 / EZB**. Beim geprüften Online-Abruf standen 30 Währungen zur Verfügung; der tatsächliche Umfang hängt vom Anbieter ab. Es handelt sich um Referenzwerte, nicht um Echtzeitkurse oder garantierte Bankangebote. An Wochenenden und Feiertagen kann das Kursdatum zurückliegen.
+
+| Status | Bedeutung |
+| :--- | :--- |
+| **Online** | Validierte Daten mit dem tatsächlichen Kursdatum. |
+| **Offline / gespeicherte Kurse** | Der letzte lokal gespeicherte Stand; dieser kann älter sein. |
+| **DEMO** | Undatierte Beispielwerte zum Ausprobieren, auch in Verlauf und CSV als DEMO gekennzeichnet. |
+
+Diagramme zeigen ausschließlich abgerufene oder gespeicherte historische Daten. Fehlende Daten werden nicht erfunden.
+
+## 🔒 Deine Daten bleiben übersichtlich
+
+**Kein Konto, keine Telemetrie, keine Broker-Verbindung.** Beträge und Umrechnungsverlauf werden nicht an den Kursanbieter übertragen. Kursabfragen enthalten Währungen, Zeiträume und normale Verbindungsdaten.
+
+Die Anwendung speichert ihre Daten unter `%LOCALAPPDATA%\QuantumFX`. Die EXE benötigt keine Installation; Einstellungen und Verlauf liegen separat in diesem Benutzerordner.
+
+<details>
+<summary><strong>Gespeicherte Dateien und Startoptionen</strong></summary>
+
+| Datei | Inhalt |
+| :--- | :--- |
+| `settings.json` | Einstellungen, Favoriten und Spiel-Highscore |
+| `rates.json` | Letzter Kursstand mit Kurs- und Abrufdatum |
+| `chart-*.json` | Gespeicherte Zeitreihen |
+| `history.json` | Bis zu 1.000 Umrechnungen |
+| `QuantumFX.log` | Fehlerprotokoll; maximal drei Dateien mit jeweils etwa 1 MB |
+
+```powershell
+# Im normalen Fenster starten
+.\QuantumFX.exe --windowed
+
+# Automatischen Kursabruf beim Start überspringen
+.\QuantumFX.exe --offline
+```
+
+Manuelle Abrufe bleiben mit `--offline` möglich. `QUANTUMFX_DATA_DIR` setzt einen eigenen Datenordner für getrennte Profile oder Tests. Über **Verlauf löschen** lassen sich die gespeicherten Umrechnungen entfernen. Automatische Programmupdates sind nicht enthalten.
+
+</details>
+
+## 🛠️ Für Entwickler
+
+**Python 3.10+ mit Tk.** Die Anwendung selbst benötigt keine externen Python-Laufzeitpakete. Test- und Build-Werkzeuge stehen in `requirements-dev.txt`.
+
+```powershell
+git clone https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform.git
+cd QuantumFX-Currency-Intelligence-Platform
+python -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements-dev.txt
+.venv/Scripts/python.exe main.py
+```
+
+<details>
+<summary><strong>Tests ausführen und Windows-EXE bauen</strong></summary>
+
+```powershell
+# Logiktests
+.venv/Scripts/python.exe -m pytest
+
+# Zusätzlich die echte Tk-Oberfläche testen
+$env:QUANTUMFX_GUI_TESTS = '1'
+.venv/Scripts/python.exe -m pytest
+
+# Eigenständige Windows-EXE erstellen
+./build.ps1 -Python .venv/Scripts/python.exe
+```
+
+Das Ergebnis liegt unter `dist/QuantumFX.exe`. Ein Icon ist enthalten; nur dessen Neugenerierung über `tools/create_icon.py` benötigt Pillow.
+
+Integrierter Selbsttest mit temporärem Profil:
+
+```powershell
+./dist/QuantumFX.exe --smoke-test C:/Pfad/smoke-result.json
+```
+
+Nach Prozessende enthält die JSON-Datei `ok: true` oder eine Fehlermeldung. Der GitHub-Actions-Workflow führt Tests und Windows-Build aus und stellt erfolgreiche Builds zusätzlich als Artefakt bereit.
+
+</details>
+
+### Projektaufbau
+
+```text
+quantumfx/
+├── app.py       Oberfläche und Bedienabläufe
+├── core.py      Kurse, Berechnungen und lokale Speicherung
+├── ui.py        Gestaltung, Icons und Animationen
+└── snake.py     Spielregeln und Arcade-Oberfläche
+main.py          Programmeinstieg
+assets/          Grafiken und Anwendungsicon
+tests/           Tests der neuen Anwendung
+tools/           Werkzeuge für Build-Pakete und Icon
+legacy/          Archiv des Originalprojekts
+```
+
+**Release-Prüfung:** 75 automatisierte Tests und der Selbsttest der fertigen EXE bestanden. Einzelheiten stehen im [Prüfbericht](PRUEFBERICHT.md); Neuerungen im [Changelog](CHANGELOG.md).
+
+## 📚 Herkunft & Lizenz
+
+QuantumFX basiert auf dem [Originalprojekt von oneiric-hammer](https://github.com/oneiric-hammer/QuantumFX-Currency-Intelligence-Platform), Ausgangsstand `1a431f630f32f57b2b93e8c1d1df5aab4b9cae38`. Die [Original-Lizenz](LICENSE) bleibt unverändert erhalten. Weitere Laufzeitlizenzen liegen unter [licenses/](licenses/).
+
+Die ursprüngliche Oberfläche mit vier Sprachen und die ursprüngliche README sind unter [legacy/](legacy/) archiviert. Die aktuelle Desktop-Oberfläche ist auf Deutsch; die alte Anwendung gehört nicht zur neuen EXE.
+
+---
+
+<div align="center">
+
+**QuantumFX · Währungen. Klar im Blick.**
+
+[Download](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/releases/latest) · [Änderungen](CHANGELOG.md) · [Fehler melden](https://github.com/Eric-Enterprise/QuantumFX-Currency-Intelligence-Platform/issues)
+
+</div>
